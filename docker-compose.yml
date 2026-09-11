@@ -1,0 +1,49 @@
+# Desarrollo local.
+#
+#   docker compose up -d        # levanta Postgres + Redis
+#   npm run migrate             # aplica el esquema (solo si usás Postgres)
+#   npm run dev                 # la app corre fuera de Docker (hot reload)
+#
+# Publica los puertos en 127.0.0.1 para que el `npm run dev` del host conecte.
+# Para producción usá docker-compose.coolify.yml (ese NO publica puertos de DB).
+#
+# ¿Solo querés probar el agente? No necesitás nada de esto:
+#   npm run chat     (terminal)   o   npm run demo   (web, STORE=memory)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: agent
+      POSTGRES_PASSWORD: agent
+      POSTGRES_DB: agent
+    ports:
+      # 5433 (no 5432): este es el bot #2, para poder correrlo junto al otro bot en la misma Mac.
+      - '127.0.0.1:5433:5432'
+    volumes:
+      - wa-agent-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U agent -d agent']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      # 6380 (no 6379): este es el bot #2, para poder correrlo junto al otro bot en la misma Mac.
+      - '127.0.0.1:6380:6379'
+    volumes:
+      - wa-agent-redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  wa-agent-pgdata:
+  wa-agent-redisdata:
