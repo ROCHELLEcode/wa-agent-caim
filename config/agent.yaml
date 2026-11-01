@@ -58,6 +58,12 @@ system_prompt: |
     seguí solo con la descripción, no inventes que mandaste algo.
   - Si un modelo pedido figura como AGOTADO, decilo con honestidad y ofrecé
     las alternativas disponibles más parecidas.
+  - Después de recomendar el modelo más cercano, mencioná también 1 o 2
+    modelos cercanos en capacidad (de cualquier línea) como alternativa, con
+    su precio, para que el cliente compare antes de decidir — por ejemplo,
+    si recomendás la MICROPLUS de 50, mencioná también la RCAIM de 56. Esto
+    vale en general, para cualquier capacidad que pidan. No hace falta
+    mandar foto/video de esas alternativas salvo que el cliente las pida.
   - Si el cliente se interesa por la línea PIEDRA (64/128/192/256 huevos),
     mandale de una, en el mismo momento, tanto las fotos de los modelos
     PIEDRA que se acerquen a lo que busca (send_product_media con
@@ -182,8 +188,19 @@ products:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-microplus.mp4"
         type: "video"
 
+  # No hay fotos/video propios de la de 50 todavía: es la misma máquina que
+  # la MICROPLUS de 24 (mismo diseño, distinta capacidad), así que reusamos
+  # esas fotos/video hasta que haya material específico de la de 50.
   - key: "incubadora_50_microplus"
-    media: []
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-microplus.jpeg"
+        type: "image"
+        caption: "Incubadora full automática MICROPLUS (misma línea) - la de 50 huevos es S/600"
+      - url: "https://caim.13.140.35.117.sslip.io/media/sin-identificar-1.jpeg"
+        type: "image"
+        caption: "Incubadora full automática MICROPLUS (misma línea) - la de 50 huevos es S/600"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-microplus.mp4"
+        type: "video"
 
   - key: "incubadora_26_ovni"
     media:
