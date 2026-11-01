@@ -79,14 +79,12 @@ system_prompt: |
     y qué precio está buscando (por si prefiere otra opción). Esto vale en
     general, para cualquier capacidad que pidan.
   - Si el cliente se interesa por la línea PIEDRA (64/128/192/256 huevos),
-    mandale de una, en el mismo momento, tanto las fotos de los modelos
-    PIEDRA que se acerquen a lo que busca (send_product_media con
-    "incubadora_piedra_64", "_128", "_192" y/o "_256" según corresponda)
-    como los videos de la línea (send_product_media con "piedra_videos") —
-    no hace falta esperar a que confirme qué capacidad quiere: los videos
-    son de la línea en general y sirven para cualquier capacidad PIEDRA.
-    Mencioná también los regalos que incluye (aclarando que están sujetos a
-    stock) — ayuda a cerrar la venta.
+    llamá a send_product_media UNA sola vez con la key de la capacidad que
+    corresponda ("incubadora_piedra_64", "_128", "_192" o "_256") — esa
+    única llamada ya manda la foto del modelo, la foto general de la línea,
+    todos los videos, Y la descripción completa (garantías, regalos) como
+    pie de foto, así que no hace falta llamar a nada más ni escribir esa
+    info de nuevo en tu mensaje de texto.
   - Cuando ayude a la venta o el cliente pregunte por garantía/soporte,
     mencioná los beneficios incluidos (garantía, calibración previa,
     asesoramiento, servicio técnico, repuestos) para transmitir confianza.
@@ -276,47 +274,39 @@ products:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-56-rcaim-3.mp4"
         type: "video"
 
-  # PIEDRA: los videos (piedra-video-2 a 6) no son de una capacidad puntual,
-  # son de la línea en general — van en una key aparte ("piedra_videos") que
-  # el bot manda siempre que se hable de un modelo PIEDRA, sin importar cuál.
+  # PIEDRA: cada capacidad manda TODO junto en una sola llamada (su foto, la
+  # foto general de la línea, los 8 videos de la línea, y la descripción
+  # completa como caption) — así no depende de que el modelo haga dos
+  # llamadas ni copie texto largo a mano; send_product_media con una sola key
+  # ya manda todo. (YAML no permite "spread" de listas con anchors, por eso
+  # los 8 videos están repetidos en cada bloque — es intencional.)
   - key: "incubadora_piedra_64"
     media:
-      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-64.jpeg"
-        type: "image"
-        caption: "Incubadora PIEDRA 64 huevos - S/450"
       - url: "https://caim.13.140.35.117.sslip.io/media/piedra-general.jpeg"
         type: "image"
-        caption: "Línea PIEDRA: 64 / 128 / 192 / 256 huevos"
+        caption: &piedra_desc |
+          Incluye:
+          🥚1 año de Garantía Real
+          🥚Videos de manejo
+          🥚Videos de instalación
+          🥚Asesoramiento telefónico constante de lunes a sábado 9am a 6pm
+          🥚Calibración de máquina antes de la venta.
+          🥚Servicio Técnico solo para clientes
+          🥚Asesoramiento en temas de Incubación gallina pato pavo etc
+          🥚Todo tipo de repuestos garantizados
 
-  - key: "incubadora_piedra_128"
-    media:
-      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-128.jpeg"
-        type: "image"
-        caption: "Incubadora PIEDRA 128 huevos - S/580"
-      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-general.jpeg"
-        type: "image"
-        caption: "Línea PIEDRA: 64 / 128 / 192 / 256 huevos"
+          NOTA: Son máquinas calibradas No se deje estafar!!
 
-  - key: "incubadora_piedra_192"
-    media:
-      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-192.jpeg"
-        type: "image"
-        caption: "Incubadora PIEDRA 192 huevos - S/790"
-      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-general.jpeg"
-        type: "image"
-        caption: "Línea PIEDRA: 64 / 128 / 192 / 256 huevos"
+          🔥Máquinas de 64 a 256 huevos además de regalo:
 
-  - key: "incubadora_piedra_256"
-    media:
-      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-256.jpeg"
-        type: "image"
-        caption: "Incubadora PIEDRA 256 huevos - S/950"
-      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-general.jpeg"
-        type: "image"
-        caption: "Línea PIEDRA: 64 / 128 / 192 / 256 huevos"
+          🐣01 comedero tolva
+          🐣01 bebedero tolva para pollito
+          🐣01 cable conexión a batería
+          🐣Ovoscopio,
+          🐣linterna
+          🐣dona humidificadora
 
-  - key: "piedra_videos"
-    media:
+          🔊🔊🔊NOTA zIMPORTANTE: Los regalos son sujetos a variaciones según stock 🔊🔊🔊
       - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-2.mp4"
         type: "video"
       - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-3.mp4"
@@ -327,6 +317,90 @@ products:
         type: "video"
       - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-6.mp4"
         type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-8.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-9.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-10.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-64.jpeg"
+        type: "image"
+        caption: "Incubadora PIEDRA 64 huevos - S/450"
+
+  - key: "incubadora_piedra_128"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-general.jpeg"
+        type: "image"
+        caption: *piedra_desc
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-2.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-3.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-4.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-5.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-6.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-8.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-9.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-10.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-128.jpeg"
+        type: "image"
+        caption: "Incubadora PIEDRA 128 huevos - S/580"
+
+  - key: "incubadora_piedra_192"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-general.jpeg"
+        type: "image"
+        caption: *piedra_desc
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-2.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-3.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-4.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-5.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-6.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-8.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-9.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-10.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-192.jpeg"
+        type: "image"
+        caption: "Incubadora PIEDRA 192 huevos - S/790"
+
+  - key: "incubadora_piedra_256"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-general.jpeg"
+        type: "image"
+        caption: *piedra_desc
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-2.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-3.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-4.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-5.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-6.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-8.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-9.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-10.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-256.jpeg"
+        type: "image"
+        caption: "Incubadora PIEDRA 256 huevos - S/950"
 
   - key: "incubadora_metal_180"
     media:
