@@ -19,8 +19,8 @@ const WEBHOOK_PATH = '/webhooks/ycloud';
  * mensaje tuyo. Podés borrarlos después ("eliminar para todos") si querés.
  */
 const AGENT_CONTROL_COMMANDS: Record<string, boolean> = {
-  '/pausa': false,
-  '/reanudar': true,
+  '/nn': false,
+  '/ss': true,
 };
 
 /**
@@ -47,8 +47,8 @@ export const ycloudAdapter: ChannelAdapter = {
       }
 
       // Eco de un mensaje que EL DUEÑO escribió a mano en la app de WhatsApp
-      // (coexistencia). Lo tratamos como comando de control (/pausa,
-      // /reanudar), nunca lo mandamos al agente.
+      // (coexistencia). Lo tratamos como comando de control (/nn,
+      // /ss), nunca lo mandamos al agente.
       const control = parseAgentControl(request.body);
       if (control) {
         await applyAgentControl(control, ctx);
@@ -173,7 +173,7 @@ interface AgentControlCommand {
 }
 
 /**
- * Detecta /pausa y /reanudar en el evento de eco `whatsapp.smb.message.echoes`
+ * Detecta /nn y /ss en el evento de eco `whatsapp.smb.message.echoes`
  * (mensajes que vos mandaste a mano desde la app, no vía la API). Cualquier
  * otro texto tuyo (una respuesta normal a un cliente) devuelve null y sigue
  * de largo sin tocar nada — por eso son comandos exactos y no "cualquier

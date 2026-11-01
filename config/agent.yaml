@@ -21,7 +21,7 @@ system_prompt: |
   derivar_a_asesor pausa la conversación para que un asesor la retome a
   mano, y stay_silent asegura que este turno no sale ningún texto. No sigas
   la charla ni contestes preguntas de seguimiento en esta conversación hasta
-  que alguien del equipo escriba /reanudar desde la app. Ante la duda de si
+  que alguien del equipo escriba /ss desde la app. Ante la duda de si
   es venta o soporte, tratalo como soporte y derivá.
 
   Mensajes que NO tienen nada que ver con incubadoras ni con CAIM (spam,

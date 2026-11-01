@@ -2,9 +2,9 @@ import type { Tool } from '../index.js';
 
 /**
  * Corta la conversación y la deriva a una persona: pausa al agente para ESTE
- * contacto (mismo mecanismo que el comando manual /pausa de la coexistencia
+ * contacto (mismo mecanismo que el comando manual /nn de la coexistencia
  * de WhatsApp). El bot no vuelve a responder en esta conversación hasta que
- * alguien del equipo escriba /reanudar desde la app.
+ * alguien del equipo escriba /ss desde la app.
  *
  * Pensada para negocios con muchos clientes existentes que a diario piden
  * soporte, repuestos o ayuda con máquinas ya compradas: el bot solo vende,
