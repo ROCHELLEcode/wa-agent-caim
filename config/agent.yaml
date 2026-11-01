@@ -135,44 +135,41 @@ knowledge:
 
 # Fotos/videos que el bot puede mandar con la herramienta send_product_media.
 # Los archivos están en public/media/ de este repo y se sirven en
-# https://TU-DOMINIO/media/<archivo> (la propia app los sirve, no GitHub).
-#
-# ⚠️ REEMPLAZAR "TU-DOMINIO" en todo este archivo por el dominio real una vez
-# que el bot esté deployado (buscar y reemplazar "TU-DOMINIO" alcanza).
+# https://caim.13.140.35.117.sslip.io/media/<archivo> (la propia app los sirve, no GitHub).
 products:
   - key: "incubadora_06"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-06.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-06.jpeg"
         type: "image"
         caption: "Incubadora automática 06 huevos - S/100"
 
   - key: "incubadora_12"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-12.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-12.jpeg"
         type: "image"
         caption: "Incubadora automática 12 huevos - S/210"
 
   - key: "incubadora_24"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-24.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24.jpeg"
         type: "image"
         caption: "Incubadora automática 24 huevos - S/250"
-      - url: "https://TU-DOMINIO/media/incubadora-24-1.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-1.mp4"
         type: "video"
-      - url: "https://TU-DOMINIO/media/incubadora-24-2.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-2.mp4"
         type: "video"
-      - url: "https://TU-DOMINIO/media/incubadora-24-3.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-3.mp4"
         type: "video"
 
   - key: "incubadora_24_microplus"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-24-microplus.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-microplus.jpeg"
         type: "image"
         caption: "Incubadora full automática MICROPLUS 24 huevos - S/350"
-      - url: "https://TU-DOMINIO/media/sin-identificar-1.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/sin-identificar-1.jpeg"
         type: "image"
         caption: "Incubadora full automática MICROPLUS 24 huevos - S/350"
-      - url: "https://TU-DOMINIO/media/incubadora-24-microplus.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-microplus.mp4"
         type: "video"
 
   - key: "incubadora_50_microplus"
@@ -180,44 +177,44 @@ products:
 
   - key: "incubadora_26_ovni"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-26-ovni.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-26-ovni.jpeg"
         type: "image"
         caption: "Incubadora automática OVNI 26 huevos - S/170"
 
   - key: "incubadora_52_ovni"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-52-ovni.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-52-ovni.jpeg"
         type: "image"
         caption: "Incubadora automática OVNI 52 huevos - S/230"
 
   - key: "incubadora_36"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-36.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-36.jpeg"
         type: "image"
         caption: "Incubadora automática 36 huevos - S/320"
 
   - key: "incubadora_48_rcaim"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-48-rcaim-1.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-48-rcaim-1.jpeg"
         type: "image"
         caption: "Incubadora RCAIM 48 huevos - S/440"
-      - url: "https://TU-DOMINIO/media/incubadora-48-rcaim-2.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-48-rcaim-2.jpeg"
         type: "image"
         caption: "Incubadora RCAIM 48 huevos - S/440"
 
   - key: "incubadora_56_rcaim"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-56-rcaim-1.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-56-rcaim-1.jpeg"
         type: "image"
         caption: "Incubadora RCAIM 56 huevos - S/540"
-      - url: "https://TU-DOMINIO/media/incubadora-56-rcaim-2.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-56-rcaim-2.jpeg"
         type: "image"
         caption: "Incubadora RCAIM 56 huevos - S/540"
-      - url: "https://TU-DOMINIO/media/incubadora-56-rcaim-1.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-56-rcaim-1.mp4"
         type: "video"
-      - url: "https://TU-DOMINIO/media/incubadora-56-rcaim-2.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-56-rcaim-2.mp4"
         type: "video"
-      - url: "https://TU-DOMINIO/media/incubadora-56-rcaim-3.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-56-rcaim-3.mp4"
         type: "video"
 
   # PIEDRA: los videos (piedra-video-2 a 6) no son de una capacidad puntual,
@@ -225,106 +222,106 @@ products:
   # el bot manda siempre que se hable de un modelo PIEDRA, sin importar cuál.
   - key: "incubadora_piedra_64"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-piedra-64.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-64.jpeg"
         type: "image"
         caption: "Incubadora PIEDRA 64 huevos - S/450"
-      - url: "https://TU-DOMINIO/media/piedra-general.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-general.jpeg"
         type: "image"
         caption: "Línea PIEDRA: 64 / 128 / 192 / 256 huevos"
 
   - key: "incubadora_piedra_128"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-piedra-128.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-128.jpeg"
         type: "image"
         caption: "Incubadora PIEDRA 128 huevos - S/580"
-      - url: "https://TU-DOMINIO/media/piedra-general.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-general.jpeg"
         type: "image"
         caption: "Línea PIEDRA: 64 / 128 / 192 / 256 huevos"
 
   - key: "incubadora_piedra_192"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-piedra-192.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-192.jpeg"
         type: "image"
         caption: "Incubadora PIEDRA 192 huevos - S/790"
-      - url: "https://TU-DOMINIO/media/piedra-general.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-general.jpeg"
         type: "image"
         caption: "Línea PIEDRA: 64 / 128 / 192 / 256 huevos"
 
   - key: "incubadora_piedra_256"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-piedra-256.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-256.jpeg"
         type: "image"
         caption: "Incubadora PIEDRA 256 huevos - S/950"
-      - url: "https://TU-DOMINIO/media/piedra-general.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-general.jpeg"
         type: "image"
         caption: "Línea PIEDRA: 64 / 128 / 192 / 256 huevos"
 
   - key: "piedra_videos"
     media:
-      - url: "https://TU-DOMINIO/media/piedra-video-2.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-2.mp4"
         type: "video"
-      - url: "https://TU-DOMINIO/media/piedra-video-3.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-3.mp4"
         type: "video"
-      - url: "https://TU-DOMINIO/media/piedra-video-4.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-4.mp4"
         type: "video"
-      - url: "https://TU-DOMINIO/media/piedra-video-5.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-5.mp4"
         type: "video"
-      - url: "https://TU-DOMINIO/media/piedra-video-6.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-6.mp4"
         type: "video"
 
   - key: "incubadora_metal_180"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-metal-180.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-180.jpeg"
         type: "image"
         caption: "Incubadora de METAL 180 huevos - S/1300 (AGOTADO)"
 
   - key: "incubadora_metal_240"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-metal-240.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-240.jpeg"
         type: "image"
         caption: "Incubadora de METAL 240 huevos - S/1500 (AGOTADO)"
 
   - key: "incubadora_metal_500"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-metal-500.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-500.jpeg"
         type: "image"
         caption: "Incubadora de METAL 500 huevos - S/2500"
 
   - key: "incubadora_metal_1056"
     media:
-      - url: "https://TU-DOMINIO/media/incubadora-metal-1056.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-1056.jpeg"
         type: "image"
         caption: "Incubadora de METAL 1056 huevos - S/3100 (AGOTADO)"
 
   - key: "envio_provincia"
     media:
-      - url: "https://TU-DOMINIO/media/envio-provincia.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia.jpeg"
         type: "image"
         caption: "Envíos a provincia por Shalom"
-      - url: "https://TU-DOMINIO/media/envio-provincia-2.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-2.mp4"
         type: "video"
-      - url: "https://TU-DOMINIO/media/envio-provincia-3.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-3.mp4"
         type: "video"
-      - url: "https://TU-DOMINIO/media/envio-provincia-3b.mp4"
+      - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-3b.mp4"
         type: "video"
 
   - key: "metodos_pago"
     media:
-      - url: "https://TU-DOMINIO/media/metodos-pago-1.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-1.jpeg"
         type: "image"
-      - url: "https://TU-DOMINIO/media/metodos-pago-2.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-2.jpeg"
         type: "image"
-      - url: "https://TU-DOMINIO/media/metodos-pago-3.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-3.jpeg"
         type: "image"
 
   - key: "ubicacion"
     media:
-      - url: "https://TU-DOMINIO/media/ubicacion-1.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-1.jpeg"
         type: "image"
         caption: "Cómo llegar a CAIM"
-      - url: "https://TU-DOMINIO/media/ubicacion-2.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-2.jpeg"
         type: "image"
-      - url: "https://TU-DOMINIO/media/ubicacion-3.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-3.jpeg"
         type: "image"
 
 greeting: "🐣 Bienvenido/a a CAIM. ¿En qué puedo ayudarle? Cuénteme qué necesita y con gusto le asesoro."

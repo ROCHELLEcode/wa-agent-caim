@@ -132,6 +132,11 @@ function ycloudSignatureValid(raw: Buffer, header: unknown, secret: string): boo
 /**
  * YCloud manda el mensaje en `whatsappInboundMessage`. Solo procesamos texto
  * por ahora (ver notas de diseño del README sobre audio/imágenes).
+ *
+ * Si la cuenta de YCloud tiene más de un número de WhatsApp dado de alta
+ * (varios negocios en la misma cuenta), TODOS mandan sus eventos al mismo
+ * webhook. Por eso filtramos por `to` === nuestro YCLOUD_FROM_NUMBER: así
+ * este bot ignora los mensajes de clientes de otro negocio/número.
  */
 function parseInbound(payload: unknown): NormalizedMessage | null {
   const p = payload as {
@@ -139,6 +144,7 @@ function parseInbound(payload: unknown): NormalizedMessage | null {
     whatsappInboundMessage?: {
       id?: string;
       from?: string;
+      to?: string;
       type?: string;
       text?: { body?: string };
       customerProfile?: { name?: string };
@@ -146,6 +152,7 @@ function parseInbound(payload: unknown): NormalizedMessage | null {
   };
   const m = p?.whatsappInboundMessage;
   if (!m?.from) return null;
+  if (m.to && m.to !== ycloudEnv.YCLOUD_FROM_NUMBER) return null;
 
   const text = m.type === 'text' ? (m.text?.body ?? '').trim() : '';
   if (!text) return null;
@@ -171,13 +178,17 @@ interface AgentControlCommand {
  * otro texto tuyo (una respuesta normal a un cliente) devuelve null y sigue
  * de largo sin tocar nada — por eso son comandos exactos y no "cualquier
  * mensaje tuyo pausa el bot": así no hay riesgo de pausar por accidente.
+ *
+ * También filtra por `from` === nuestro número, por si la cuenta de YCloud
+ * tiene más de un número dado de alta (ver nota en parseInbound).
  */
 function parseAgentControl(payload: unknown): AgentControlCommand | null {
   const p = payload as {
     type?: string;
-    whatsappMessage?: { to?: string; text?: { body?: string } };
+    whatsappMessage?: { from?: string; to?: string; text?: { body?: string } };
   };
   if (p?.type !== 'whatsapp.smb.message.echoes') return null;
+  if (p.whatsappMessage?.from && p.whatsappMessage.from !== ycloudEnv.YCLOUD_FROM_NUMBER) return null;
 
   const to = p.whatsappMessage?.to;
   const body = (p.whatsappMessage?.text?.body ?? '').trim().toLowerCase();
