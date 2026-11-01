@@ -86,16 +86,24 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
       return { reply: t ? sanitizeReply(t) : null, toolsUsed, media: ctx.media };
     }
 
+    let staySilentCalled = false;
     for (const call of toolCalls) {
       if (call.type !== 'function') continue;
       const name = call.function.name;
       toolsUsed.push(name);
+      if (name === 'stay_silent') staySilentCalled = true;
 
       const result = await runTool(toolMap, name, call.function.arguments, ctx);
       const content = JSON.stringify(result);
 
       await store.appendMessage(conversation.id, { role: 'tool', content, toolCallId: call.id });
       messages.push({ role: 'tool', tool_call_id: call.id, content });
+    }
+
+    // stay_silent corta el turno acá: no dejamos que el modelo escriba texto
+    // después (en la práctica, termina explicando por qué se queda callado).
+    if (staySilentCalled) {
+      return { reply: null, toolsUsed, media: ctx.media };
     }
   }
 
