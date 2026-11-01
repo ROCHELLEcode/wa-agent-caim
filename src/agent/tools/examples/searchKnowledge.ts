@@ -27,10 +27,24 @@ export const searchKnowledge: Tool = {
     if (!q) return { results: [], note: 'Falta el término de búsqueda.' };
 
     const { knowledge } = loadConfig();
-    const terms = q.toLowerCase().split(/\s+/).filter((t) => t.length > 2);
+    // length > 2 para descartar conectores cortos ("de", "el"...), pero los
+    // números SIEMPRE se quedan aunque tengan 1-2 dígitos (06, 12, 24, 50...)
+    // porque son justo lo que distingue un modelo de otro.
+    const terms = q
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((t) => t.length > 2 || /\d/.test(t));
+
+    // \b...\b (límite de palabra), no "contains": si no, buscar "50" también
+    // "matchea" dentro del precio "S/250" de otro modelo y ensucia el ranking.
+    const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const termRegexes = terms.map((t) => new RegExp(`\\b${escapeRegex(t)}\\b`));
 
     const results = knowledge
-      .map((entry) => ({ entry, score: terms.filter((t) => entry.toLowerCase().includes(t)).length }))
+      .map((entry) => {
+        const lower = entry.toLowerCase();
+        return { entry, score: termRegexes.filter((re) => re.test(lower)).length };
+      })
       .filter((x) => x.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, 3)
