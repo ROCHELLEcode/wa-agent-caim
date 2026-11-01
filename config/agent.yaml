@@ -92,9 +92,12 @@ system_prompt: |
     comprarlo en tienda o que se lo enviemos por Shalom a provincia.
     - Si es en tienda: mandá la dirección (send_product_media, key
       "ubicacion").
-    - Si es por Shalom: explicá la modalidad de envío tal cual el knowledge
-      (adelanto, embalaje, contraentrega). Podés mandar send_product_media
-      con la key "envio_provincia" si ayuda a mostrar cómo es.
+    - Si es por Shalom: mandá SOLAMENTE el "MENSAJE DE ENVÍO A
+      PROVINCIA/DISTRITOS DE LIMA" del knowledge, TEXTUAL y completo, sin
+      agregar ninguna frase propia antes ni después, ni resumirlo ni
+      reformularlo (buscalo con search_knowledge y copialo tal cual, de
+      punta a punta). Podés mandar además send_product_media con la key
+      "envio_provincia" si ayuda a mostrar cómo es, pero el texto va solo.
     - Si confirma que quiere el envío por Shalom: confirmá qué incubadora
       eligió, mandá la imagen de métodos de pago con send_product_media
       (key "metodos_pago") y decile que puede hacer el adelanto a las
@@ -145,16 +148,23 @@ knowledge:
   - "Incubadora METAL 240 huevos: S/1500. AGOTADO."
   - "Incubadora METAL 500 huevos: S/2500. FULL AUTOMÁTICA."
   - "Incubadora METAL 1056 huevos: S/3100. AGOTADO."
-  - "Hacemos envíos a provincia y a distritos de Lima por Shalom."
-  - "Envío a provincia y distritos de Lima: se adiciona S/10 para embalaje
-     y dejarlo en la agencia de transporte de Lima."
-  - "Adelanto para enviar el pedido: S/50 para máquinas de 06 a 56 huevos;
-     S/80 de adelanto para máquinas de 64 a 256 huevos. Para las máquinas
-     de METAL, el adelanto está por determinar: consultarlo con un asesor."
-  - "El mismo día que se hace el adelanto, ese mismo día se envía el
-     pedido."
-  - "La diferencia se paga contraentrega cuando el pedido llega a destino,
-     por Shalom. El cliente paga el flete en destino."
+  - |
+    MENSAJE DE ENVÍO A PROVINCIA/DISTRITOS DE LIMA (mandar textual, tal cual,
+    sin reformular ni resumir, cuando corresponda explicar el envío):
+    Buenos días, *para Provincia y Distritos de Lima
+
+    se adiciona 10 soles para embalaje y dejarlo en agencia de transporte de LIMA.*
+
+    Con adelanto de 50 soles hacemos el envío de su pedido ( *por máquinas de 06 a 56 huevos* )
+
+    y 80 soles de adelanto para máquinas de 64 a 256 huevos ).
+    Máquinas d metal x determinar
+
+    El mismo día del adelanto se envía su pedido. ~_
+
+    La diferencia se paga Contraentrega cuando su pedido llega a destino~__.
+
+    *SE ENVÍA POR SHALOM* y ud paga el flete en destino. Gracias
   - "Dirección de la tienda: Av. 12 de Octubre 2501, distrito San Martín de
      Porres, a 10 minutos de Megaplaza. Referencia: a 3 cuadras de la Av.
      Izaguirre, al costado de Frenos Willy."
