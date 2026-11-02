@@ -21,12 +21,29 @@ const productSchema = z.object({
   media: z.array(mediaItemSchema).default([]),
 });
 
+/**
+ * Catálogo estructurado (capacidad/precio/línea). Separado de `knowledge`
+ * (que es texto libre) para que la búsqueda de precio por capacidad sea un
+ * cálculo exacto en código (herramienta buscar_modelo), no una búsqueda de
+ * texto — con texto libre, una consulta vaga ("el más grande", capacidades
+ * escritas en palabras) podía devolver el precio de otro modelo.
+ */
+const modeloSchema = z.object({
+  key: z.string(),
+  linea: z.string(),
+  capacidad: z.number(),
+  precio: z.number(),
+  fullAutomatica: z.boolean().default(false),
+  agotado: z.boolean().default(false),
+});
+
 const schema = z.object({
   name: z.string().default('Asistente'),
   system_prompt: z.string().min(1, 'Falta system_prompt en agent.yaml'),
   greeting: z.string().optional(),
   knowledge: z.array(z.string()).default([]),
   products: z.array(productSchema).default([]),
+  catalogo: z.array(modeloSchema).default([]),
 });
 
 export type AgentConfig = z.infer<typeof schema>;

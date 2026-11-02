@@ -73,23 +73,27 @@ system_prompt: |
     en ese mensaje: nada de specs generales, battería, garantía, ni la
     diferencia entre FULL AUTOMÁTICA y manual — eso se explica recién cuando
     ya sepas qué modelo le interesa. No mandes catálogo ni fotos todavía.
-  - Con esa info, elegí el o los modelos cuya CANTIDAD DE HUEVOS esté
-    numéricamente más cerca de lo que pidió el cliente, comparando entre
-    TODOS los modelos de todas las líneas (06, 12, 24, MICROPLUS, OVNI, 36,
-    RCAIM, PIEDRA, METAL) — no te quedes solo con una línea. Por ejemplo, si
-    pide "unos 200 huevos", la opción más cercana es la PIEDRA de 192 (no
-    una RCAIM de 48 o 56, que están mucho más lejos). Esto vale para
-    CUALQUIER capacidad que pidan (06, 20, 50, lo que sea), no solo PIEDRA.
+  - Con esa info, llamá a buscar_modelo con la capacidad que pidió (si no
+    dio un número exacto — "el más grande", "una mediana", una cantidad en
+    palabras — convertila vos a un número aproximado antes de llamar la
+    herramienta). ESA herramienta te da el modelo más cercano y su precio
+    exacto — NUNCA dés un precio que no haya salido de buscar_modelo en
+    ESTE turno, ni lo calcules ni lo recuerdes de memoria de un mensaje
+    anterior: volvé a llamarla cada vez que necesites confirmar un precio,
+    aunque creas que ya lo sabés.
   - Cada vez que recomendás o das información de un modelo puntual, mandá
-    SIEMPRE los dos juntos, en el mismo momento: su descripción completa con
-    precio y specs desde search_knowledge, Y send_product_media con la key
-    de ese modelo. Esa herramienta manda TODO lo que esté cargado para esa
-    key — fotos Y videos a la vez, no uno u otro: nunca elijas entre mandar
-    foto o mandar video, mandá lo que haya. Si para ese modelo no hay nada
-    cargado todavía, send_product_media te lo va a decir — en ese caso
-    seguí solo con la descripción, no inventes que mandaste algo.
-  - Si un modelo pedido figura como AGOTADO, decilo con honestidad y ofrecé
-    las alternativas disponibles más parecidas.
+    SIEMPRE los dos juntos, en el mismo momento: el precio y specs que te
+    dio buscar_modelo (más lo que necesites de search_knowledge para specs
+    no numéricas, como garantía u horario), Y send_product_media con la key
+    de ese modelo (viene en el resultado de buscar_modelo). Esa herramienta
+    manda TODO lo que esté cargado para esa key — fotos Y videos a la vez,
+    no uno u otro: nunca elijas entre mandar foto o mandar video, mandá lo
+    que haya. Si para ese modelo no hay nada cargado todavía,
+    send_product_media te lo va a decir — en ese caso seguí solo con la
+    descripción, no inventes que mandaste algo.
+  - Si el modelo que te dio buscar_modelo tiene "agotado": true, decilo con
+    honestidad y ofrecé las alternativas de "otras_opciones_cercanas" que
+    también te devuelve la herramienta.
   - Mandá SOLO el modelo más cercano (o el que pidieron puntualmente) — no
     menciones otros modelos como alternativa salvo que el cliente pregunte
     por otra capacidad o pida ver más opciones. Al final de ese mismo
@@ -98,9 +102,9 @@ system_prompt: |
     cualquier capacidad que pidan.
   - Si después de mandarle un modelo el cliente pide ver "otro modelo" u
     "otra opción" (sin dar una capacidad nueva puntual), NO le mandes de
-    nuevo el mismo modelo que ya le mandaste. En ese caso mandale VARIOS (al
-    menos 2 o 3, de cualquier línea) de los modelos más cercanos a la
-    capacidad que pidió originalmente, cada uno con su foto/video y precio,
+    nuevo el mismo modelo que ya le mandaste. Usá "otras_opciones_cercanas"
+    del último resultado de buscar_modelo (son varias, ya ordenadas por
+    cercanía) y mandale esas, cada una con su foto/video y precio exacto,
     excluyendo siempre el que ya vio. No le muestres uno solo: dale opciones
     de verdad para comparar.
   - Si el cliente se interesa por la línea PIEDRA (64/128/192/256 huevos),
@@ -162,34 +166,38 @@ knowledge:
      incubación (gallina, pato, pavo, etc.) y todo tipo de repuestos
      garantizados."
   - "Son máquinas calibradas. No se deje estafar con máquinas sin calibrar."
-  - "PRECIOS EN TIENDA:"
-  - "Incubadora 06 huevos: S/100."
-  - "Incubadora 12 huevos: S/210."
-  - "Incubadora 24 huevos: S/250."
-  - "Incubadora 24 huevos MICROPLUS: S/350. FULL AUTOMÁTICA."
-  - "Incubadora 50 huevos MICROPLUS: S/600. FULL AUTOMÁTICA."
-  - "Incubadora 26 huevos OVNI: S/170. FULL AUTOMÁTICA."
-  - "Incubadora 52 huevos OVNI: S/230. FULL AUTOMÁTICA."
-  - "Incubadora 36 huevos: S/320."
-  - "Incubadora 48 huevos RCAIM: S/440. FULL AUTOMÁTICA."
-  - "Incubadora 56 huevos RCAIM: S/540. FULL AUTOMÁTICA."
-  - "Incubadora PIEDRA 64 huevos: S/450."
-  - "Incubadora PIEDRA 128 huevos: S/580."
-  - "Incubadora PIEDRA 192 huevos: S/790."
-  - "Incubadora PIEDRA 256 huevos: S/950."
   - "Las máquinas de 64 a 256 huevos (línea PIEDRA) incluyen además de
      regalo: 01 comedero tolva, 01 bebedero tolva para pollito, 01 cable de
      conexión a batería, ovoscopio, linterna y dona humidificadora. Los
      regalos están sujetos a variación según stock."
-  - "Incubadora METAL 180 huevos: S/1300. AGOTADO."
-  - "Incubadora METAL 240 huevos: S/1500. AGOTADO."
-  - "Incubadora METAL 500 huevos: S/2500. FULL AUTOMÁTICA."
-  - "Incubadora METAL 1056 huevos: S/3100. AGOTADO."
   - "Dirección de la tienda: Av. 12 de Octubre 2501, distrito San Martín de
      Porres, a 10 minutos de Megaplaza. Referencia: a 3 cuadras de la Av.
      Izaguirre, al costado de Frenos Willy."
   - "Ubicación (mapa): https://maps.app.goo.gl/CuUyMRsNd79PTjoe7"
   - "Al llegar: preguntar por el Sr Caim y tocar el timbre 102."
+
+# Catálogo estructurado: capacidad/precio exactos, para que la herramienta
+# buscar_modelo calcule el más cercano en código (nunca por texto libre).
+# "key" tiene que coincidir con la key del product de abajo (misma máquina).
+catalogo:
+  - { key: "incubadora_06", linea: "06", capacidad: 6, precio: 100 }
+  - { key: "incubadora_12", linea: "12", capacidad: 12, precio: 210 }
+  - { key: "incubadora_24", linea: "24", capacidad: 24, precio: 250 }
+  - { key: "incubadora_24_microplus", linea: "24 MICROPLUS", capacidad: 24, precio: 350, fullAutomatica: true }
+  - { key: "incubadora_50_microplus", linea: "50 MICROPLUS", capacidad: 50, precio: 600, fullAutomatica: true }
+  - { key: "incubadora_26_ovni", linea: "26 OVNI", capacidad: 26, precio: 170, fullAutomatica: true }
+  - { key: "incubadora_52_ovni", linea: "52 OVNI", capacidad: 52, precio: 230, fullAutomatica: true }
+  - { key: "incubadora_36", linea: "36", capacidad: 36, precio: 320 }
+  - { key: "incubadora_48_rcaim", linea: "48 RCAIM", capacidad: 48, precio: 440, fullAutomatica: true }
+  - { key: "incubadora_56_rcaim", linea: "56 RCAIM", capacidad: 56, precio: 540, fullAutomatica: true }
+  - { key: "incubadora_piedra_64", linea: "PIEDRA 64", capacidad: 64, precio: 450 }
+  - { key: "incubadora_piedra_128", linea: "PIEDRA 128", capacidad: 128, precio: 580 }
+  - { key: "incubadora_piedra_192", linea: "PIEDRA 192", capacidad: 192, precio: 790 }
+  - { key: "incubadora_piedra_256", linea: "PIEDRA 256", capacidad: 256, precio: 950 }
+  - { key: "incubadora_metal_180", linea: "METAL 180", capacidad: 180, precio: 1300, agotado: true }
+  - { key: "incubadora_metal_240", linea: "METAL 240", capacidad: 240, precio: 1500, agotado: true }
+  - { key: "incubadora_metal_500", linea: "METAL 500", capacidad: 500, precio: 2500, fullAutomatica: true }
+  - { key: "incubadora_metal_1056", linea: "METAL 1056", capacidad: 1056, precio: 3100, agotado: true }
 
 # Fotos/videos que el bot puede mandar con la herramienta send_product_media.
 # Los archivos están en public/media/ de este repo y se sirven en
