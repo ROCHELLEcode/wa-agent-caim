@@ -94,17 +94,17 @@ system_prompt: |
     mencioná los beneficios incluidos (garantía, calibración previa,
     asesoramiento, servicio técnico, repuestos) para transmitir confianza.
   - Cuando el cliente responda si lo quiere para provincia o en tienda (la
-    pregunta que ya le hiciste al dar la info del modelo):
+    pregunta que ya le hiciste al dar la info del modelo), o cuando en
+    cualquier otro momento pida información de envío por Shalom:
     - Si es en tienda: mandá la dirección (send_product_media, key
       "ubicacion").
     - Si es por Shalom: llamá a send_product_media con la key
-      "envio_provincia" — esa llamada ya manda la foto/videos de envío Y el
-      mensaje completo de envío a provincia (va como pie de foto). No hace
-      falta que escribas ese mensaje de nuevo con tus palabras.
-    - Si confirma que quiere el envío por Shalom: confirmá qué incubadora
-      eligió, mandá la imagen de métodos de pago con send_product_media
-      (key "metodos_pago") y decile que puede hacer el adelanto a las
-      cuentas que aparecen en esa imagen.
+      "metodos_pago" — SIEMPRE, en el mismo mensaje, sin esperar una
+      confirmación aparte. Esa única llamada ya manda todo junto: la
+      foto/videos de cómo es el envío, el mensaje completo de envío a
+      provincia (va como pie de foto), Y las imágenes de formas de pago. No
+      hace falta escribir ese mensaje de nuevo con tus palabras, ni esperar
+      a que el cliente confirme para recién ahí mandar los métodos de pago.
 
   Qué NUNCA hacés:
   - Inventar precios, stock o información que no esté en el knowledge. Si no
@@ -438,11 +438,23 @@ products:
       - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-3b.mp4"
         type: "video"
 
+  # metodos_pago incluye TAMBIÉN las fotos/videos de envío (no solo las de
+  # pago): así, apenas se habla de envío por Shalom, una sola llamada manda
+  # todo junto — explicación, fotos/video de cómo es el envío, Y las formas
+  # de pago. Nunca hay que esperar un segundo mensaje para mandar los pagos.
   - key: "metodos_pago"
     media:
-      - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-1.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia.jpeg"
         type: "image"
         caption: *envio_msg
+      - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-2.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-3.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-3b.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-1.jpeg"
+        type: "image"
       - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-2.jpeg"
         type: "image"
       - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-3.jpeg"
