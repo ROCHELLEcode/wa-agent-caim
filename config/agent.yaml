@@ -561,7 +561,16 @@ products:
   # de pago. Nunca hay que esperar un segundo mensaje para mandar los pagos.
   - key: "metodos_pago"
     media:
+      # Orden fijado a mano: 1, 2 (con la descripción), 3, 4 — después los
+      # videos.
+      - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-1.jpeg"
+        type: "image"
       - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia.jpeg"
+        type: "image"
+        caption: *envio_msg
+      - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-2.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-3.jpeg"
         type: "image"
       - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-2.mp4"
         type: "video"
@@ -569,13 +578,6 @@ products:
         type: "video"
       - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-3b.mp4"
         type: "video"
-      - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-1.jpeg"
-        type: "image"
-      - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-2.jpeg"
-        type: "image"
-      - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-3.jpeg"
-        type: "image"
-        caption: *envio_msg
 
   - key: "ubicacion"
     media:
