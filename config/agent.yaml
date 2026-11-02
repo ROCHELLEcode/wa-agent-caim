@@ -203,6 +203,68 @@ catalogo:
 # Los archivos están en public/media/ de este repo y se sirven en
 # https://caim.13.140.35.117.sslip.io/media/<archivo> (la propia app los sirve, no GitHub).
 products:
+  # Catálogo general: se manda completo con el comando manual /inku (lo
+  # escribís vos en la app, no pasa por la IA — ver MEDIA_COMMANDS en
+  # src/channels/ycloud/adapter.ts). La foto "descripción" lleva el texto
+  # de presentación como caption.
+  - key: "catalogo_general"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/sin-identificar-1.jpeg"
+        type: "image"
+        caption: |
+          DISPONIBLE
+          Incubadora 50 huevos full Automática MICROPlus (plástico ABS) – 600 soles
+
+          Incubadora 24 huevos full Automática MICROPlus (plástico ABS) – 350 soles
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-06.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-12.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-36.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-26-ovni.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-52-ovni.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-120-sin-confirmar.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-64.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-128.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-192.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-256.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-180.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-240.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-500.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-1056.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-1.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-3.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-microplus.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-2.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-3.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/piedra-video-4.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-2.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/general-nuevo-1.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/general-nuevo-2.mp4"
+        type: "video"
+
   - key: "incubadora_06"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-06.jpeg"

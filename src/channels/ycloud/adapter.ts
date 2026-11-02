@@ -24,6 +24,17 @@ const AGENT_CONTROL_COMMANDS: Record<string, boolean> = {
 };
 
 /**
+ * Comandos de envío directo: mandan TODO el contenido de una key de
+ * `products` (config/agent.yaml) al cliente de esa conversación, sin pasar
+ * por la IA — ni gasta tokens ni depende de que el modelo "se acuerde" de
+ * llamar a varias herramientas. Pensado para catálogos grandes (fotos +
+ * videos) que querés mandar de una con un solo comando corto.
+ */
+const MEDIA_COMMANDS: Record<string, string> = {
+  '/inku': 'catalogo_general',
+};
+
+/**
  * Adaptador de YCloud (proveedor de la WhatsApp Business API).
  *
  * Configuración en YCloud: Developers → Webhooks → agregá
@@ -52,6 +63,14 @@ export const ycloudAdapter: ChannelAdapter = {
       const control = parseAgentControl(request.body);
       if (control) {
         await applyAgentControl(control, ctx);
+        return reply.code(200).send({ ok: true });
+      }
+
+      // Comando de envío directo (ej. /inku): manda todo el contenido de una
+      // key de products al cliente, también sin pasar por el agente.
+      const mediaCommand = parseMediaCommand(request.body);
+      if (mediaCommand) {
+        await sendMediaCommand(mediaCommand, ctx);
         return reply.code(200).send({ ok: true });
       }
 
@@ -204,5 +223,44 @@ async function applyAgentControl(command: AgentControlCommand, ctx: ChannelConte
   logger.info(
     { to: command.externalContactId, enabled: command.enable },
     `ycloud: agente ${command.enable ? 'reanudado' : 'pausado'} a mano en esta conversación`,
+  );
+}
+
+interface MediaCommand {
+  externalContactId: string;
+  productKey: string;
+}
+
+/**
+ * Mismo mecanismo de detección que parseAgentControl (eco de
+ * whatsapp.smb.message.echoes), pero para los MEDIA_COMMANDS.
+ */
+function parseMediaCommand(payload: unknown): MediaCommand | null {
+  const p = payload as {
+    type?: string;
+    whatsappMessage?: { from?: string; to?: string; text?: { body?: string } };
+  };
+  if (p?.type !== 'whatsapp.smb.message.echoes') return null;
+  if (p.whatsappMessage?.from && p.whatsappMessage.from !== ycloudEnv.YCLOUD_FROM_NUMBER) return null;
+
+  const to = p.whatsappMessage?.to;
+  const body = (p.whatsappMessage?.text?.body ?? '').trim().toLowerCase();
+  const productKey = MEDIA_COMMANDS[body];
+  if (!to || !productKey) return null;
+
+  return { externalContactId: to, productKey };
+}
+
+async function sendMediaCommand(command: MediaCommand, ctx: ChannelContext): Promise<void> {
+  const product = ctx.config.products.find((p) => p.key === command.productKey);
+  if (!product || product.media.length === 0) {
+    logger.warn({ key: command.productKey }, 'ycloud: comando de media sin contenido cargado en products');
+    return;
+  }
+
+  await ycloudAdapter.sendOutbound({ externalContactId: command.externalContactId, text: '', media: product.media });
+  logger.info(
+    { to: command.externalContactId, key: command.productKey, items: product.media.length },
+    'ycloud: comando de envío directo ejecutado',
   );
 }
