@@ -32,6 +32,7 @@ const AGENT_CONTROL_COMMANDS: Record<string, boolean> = {
  */
 const MEDIA_COMMANDS: Record<string, string> = {
   '/inku': 'catalogo_general',
+  '/fp': 'metodos_pago',
 };
 
 /**

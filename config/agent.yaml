@@ -542,7 +542,6 @@ products:
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia.jpeg"
         type: "image"
-        caption: *envio_msg
       - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-2.mp4"
         type: "video"
       - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-3.mp4"
@@ -555,6 +554,7 @@ products:
         type: "image"
       - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-3.jpeg"
         type: "image"
+        caption: *envio_msg
 
   - key: "ubicacion"
     media:
