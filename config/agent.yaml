@@ -203,6 +203,27 @@ catalogo:
 # Los archivos están en public/media/ de este repo y se sirven en
 # https://caim.13.140.35.117.sslip.io/media/<archivo> (la propia app los sirve, no GitHub).
 products:
+  # Videos de envío por Shalom: se mandan con el comando manual /sh, sin
+  # ninguna descripción (solo los archivos, en crudo).
+  - key: "shalom_videos"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/shalom-01.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/shalom-02.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/shalom-03.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/shalom-04.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/shalom-05.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/shalom-06.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/shalom-07.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/shalom-08.mp4"
+        type: "video"
+
   # Catálogo general: se manda completo con el comando manual /inku (lo
   # escribís vos en la app, no pasa por la IA — ver MEDIA_COMMANDS en
   # src/channels/ycloud/adapter.ts). La foto "descripción" lleva el texto

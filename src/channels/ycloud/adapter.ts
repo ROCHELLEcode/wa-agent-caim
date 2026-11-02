@@ -34,6 +34,7 @@ const MEDIA_COMMANDS: Record<string, string> = {
   '/inku': 'catalogo_general',
   '/fp': 'metodos_pago',
   '/dd': 'ubicacion',
+  '/sh': 'shalom_videos',
 };
 
 /**
