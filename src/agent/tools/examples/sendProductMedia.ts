@@ -42,7 +42,16 @@ export const sendProductMedia: Tool = {
       return { error: `No hay fotos/videos cargados para "${key}". No inventes que los mandaste.` };
     }
 
-    ctx.media.push(...product.media);
-    return { ok: true, sent: product.media.length };
+    // Si el modelo llama la herramienta dos veces (misma key, o una distinta
+    // que comparte algún archivo) en el mismo turno, no duplicamos el envío:
+    // un archivo ya puesto en cola para esta respuesta no se vuelve a mandar.
+    const yaEnColados = new Set(ctx.media.map((m) => m.url));
+    const nuevos = product.media.filter((m) => !yaEnColados.has(m.url));
+    ctx.media.push(...nuevos);
+
+    if (nuevos.length === 0) {
+      return { ok: true, sent: 0, note: `Ya habías mandado todo "${key}" en este mismo mensaje, no se repitió.` };
+    }
+    return { ok: true, sent: nuevos.length };
   },
 };
