@@ -9,6 +9,8 @@ import { ycloudEnv } from './env.js';
 
 const WEBHOOK_PATH = '/webhooks/ycloud';
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 /**
  * Comandos manuales: los escribís vos mismo, desde la app de WhatsApp
  * Business, en la conversación con el cliente. Sirven para pausar o
@@ -70,10 +72,15 @@ export const ycloudAdapter: ChannelAdapter = {
       }
 
       // Comando de envío directo (ej. /inku): manda todo el contenido de una
-      // key de products al cliente, también sin pasar por el agente.
+      // key de products al cliente, también sin pasar por el agente. No lo
+      // esperamos: catálogos grandes tardan varios segundos (hay una pausa
+      // entre cada archivo) y si YCloud no recibe el 200 a tiempo, reintenta
+      // el webhook — lo que duplicaría el envío completo.
       const mediaCommand = parseMediaCommand(request.body);
       if (mediaCommand) {
-        await sendMediaCommand(mediaCommand, ctx);
+        sendMediaCommand(mediaCommand, ctx).catch((err) =>
+          logger.error({ err, mediaCommand }, 'ycloud: falló el comando de envío directo'),
+        );
         return reply.code(200).send({ ok: true });
       }
 
@@ -90,13 +97,25 @@ export const ycloudAdapter: ChannelAdapter = {
     let lastId: string | undefined;
 
     // Primero las fotos/videos (si hay), después el texto de la respuesta.
-    for (const item of media ?? []) {
-      const res = await sendYCloudMessage({
-        to: externalContactId,
-        type: item.type,
-        payload: { link: item.url, ...(item.caption ? { caption: item.caption } : {}) },
-      });
-      lastId = res.whatsappMessage?.id ?? res.id ?? lastId;
+    // Los números de coexistencia tienen un límite de ~5 mensajes por
+    // segundo: una pausa chica entre envíos evita que WhatsApp los rechace
+    // por velocidad en tandas grandes (ej. /inku con 25 archivos). Y si UN
+    // archivo falla, no frenamos el resto — lo logueamos y seguimos, para
+    // no dejar a medio mandar un catálogo por un solo ítem con problemas.
+    const items = media ?? [];
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]!;
+      try {
+        const res = await sendYCloudMessage({
+          to: externalContactId,
+          type: item.type,
+          payload: { link: item.url, ...(item.caption ? { caption: item.caption } : {}) },
+        });
+        lastId = res.whatsappMessage?.id ?? res.id ?? lastId;
+      } catch (err) {
+        logger.error({ err, url: item.url, to: externalContactId }, 'ycloud: falló el envío de un archivo, sigo con el resto');
+      }
+      if (i < items.length - 1) await sleep(250);
     }
 
     if (text) {
@@ -232,6 +251,7 @@ async function applyAgentControl(command: AgentControlCommand, ctx: ChannelConte
 interface MediaCommand {
   externalContactId: string;
   productKey: string;
+  eventId: string;
 }
 
 /**
@@ -241,7 +261,7 @@ interface MediaCommand {
 function parseMediaCommand(payload: unknown): MediaCommand | null {
   const p = payload as {
     type?: string;
-    whatsappMessage?: { from?: string; to?: string; text?: { body?: string } };
+    whatsappMessage?: { id?: string; from?: string; to?: string; text?: { body?: string } };
   };
   if (p?.type !== 'whatsapp.smb.message.echoes') return null;
   if (p.whatsappMessage?.from && p.whatsappMessage.from !== ycloudEnv.YCLOUD_FROM_NUMBER) return null;
@@ -251,10 +271,21 @@ function parseMediaCommand(payload: unknown): MediaCommand | null {
   const productKey = MEDIA_COMMANDS[body];
   if (!to || !productKey) return null;
 
-  return { externalContactId: to, productKey };
+  // Id del mensaje si lo manda YCloud; si no, uno sintético por ventana de
+  // 10s (to+comando) para no reenviar todo el catálogo si YCloud reintega
+  // el webhook por una respuesta lenta.
+  const eventId = p.whatsappMessage?.id ?? `synthetic-${to}-${body}-${Math.floor(Date.now() / 10_000)}`;
+
+  return { externalContactId: to, productKey, eventId };
 }
 
 async function sendMediaCommand(command: MediaCommand, ctx: ChannelContext): Promise<void> {
+  const fresh = await ctx.store.markEventSeen('ycloud-media-command', command.eventId);
+  if (!fresh) {
+    logger.info({ eventId: command.eventId }, 'ycloud: comando de media repetido (reintento), ignorado');
+    return;
+  }
+
   const product = ctx.config.products.find((p) => p.key === command.productKey);
   if (!product || product.media.length === 0) {
     logger.warn({ key: command.productKey }, 'ycloud: comando de media sin contenido cargado en products');
