@@ -560,6 +560,16 @@ products:
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-1.jpeg"
         type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-2.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-3.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-mapa-ruta.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-fachada-2.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-horario.jpeg"
+        type: "image"
         caption: |
           Ubicación mapa:
 
@@ -570,9 +580,5 @@ products:
           🐣Referencia: A 3 cuadras de la av. IZAGUIRRE. Al costado de FRENOS WILY
 
           Preguntar por Sr Caim y tocar timbre 102
-      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-2.jpeg"
-        type: "image"
-      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-3.jpeg"
-        type: "image"
 
 greeting: "🐣 Bienvenido/a a CAIM. ¿En qué puedo ayudarle? Cuénteme qué necesita y con gusto le asesoro."
