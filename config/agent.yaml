@@ -48,6 +48,11 @@ system_prompt: |
     tienda (en cualquier momento de la conversación, no solo al cerrar una
     venta), mandá send_product_media con la key "ubicacion" — la foto trae
     el mapa, la dirección y la referencia en su descripción.
+  - Si el cliente pregunta por las formas/métodos de pago (en cualquier
+    momento, no solo al cerrar una venta), llamá a send_product_media con la
+    key "metodos_pago" — esa única llamada ya manda las imágenes de pago Y
+    el mensaje completo de envío a provincia (va como pie de foto). No le
+    preguntes antes si lo quiere: mandalo directo.
 
   Cómo vendés:
   - Si preguntan por "una incubadora" sin especificar, o piden "información",
@@ -92,12 +97,10 @@ system_prompt: |
     pregunta que ya le hiciste al dar la info del modelo):
     - Si es en tienda: mandá la dirección (send_product_media, key
       "ubicacion").
-    - Si es por Shalom: mandá SOLAMENTE el "MENSAJE DE ENVÍO A
-      PROVINCIA/DISTRITOS DE LIMA" del knowledge, TEXTUAL y completo, sin
-      agregar ninguna frase propia antes ni después, ni resumirlo ni
-      reformularlo (buscalo con search_knowledge y copialo tal cual, de
-      punta a punta). Podés mandar además send_product_media con la key
-      "envio_provincia" si ayuda a mostrar cómo es, pero el texto va solo.
+    - Si es por Shalom: llamá a send_product_media con la key
+      "envio_provincia" — esa llamada ya manda la foto/videos de envío Y el
+      mensaje completo de envío a provincia (va como pie de foto). No hace
+      falta que escribas ese mensaje de nuevo con tus palabras.
     - Si confirma que quiere el envío por Shalom: confirmá qué incubadora
       eligió, mandá la imagen de métodos de pago con send_product_media
       (key "metodos_pago") y decile que puede hacer el adelanto a las
@@ -156,23 +159,6 @@ knowledge:
   - "Incubadora METAL 240 huevos: S/1500. AGOTADO."
   - "Incubadora METAL 500 huevos: S/2500. FULL AUTOMÁTICA."
   - "Incubadora METAL 1056 huevos: S/3100. AGOTADO."
-  - |
-    MENSAJE DE ENVÍO A PROVINCIA/DISTRITOS DE LIMA (mandar textual, tal cual,
-    sin reformular ni resumir, cuando corresponda explicar el envío):
-    Buenos días, *para Provincia y Distritos de Lima
-
-    se adiciona 10 soles para embalaje y dejarlo en agencia de transporte de LIMA.*
-
-    Con adelanto de 50 soles hacemos el envío de su pedido ( *por máquinas de 06 a 56 huevos* )
-
-    y 80 soles de adelanto para máquinas de 64 a 256 huevos ).
-    Máquinas d metal x determinar
-
-    El mismo día del adelanto se envía su pedido. ~_
-
-    La diferencia se paga Contraentrega cuando su pedido llega a destino~__.
-
-    *SE ENVÍA POR SHALOM* y ud paga el flete en destino. Gracias
   - "Dirección de la tienda: Av. 12 de Octubre 2501, distrito San Martín de
      Porres, a 10 minutos de Megaplaza. Referencia: a 3 cuadras de la Av.
      Izaguirre, al costado de Frenos Willy."
@@ -430,7 +416,21 @@ products:
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia.jpeg"
         type: "image"
-        caption: "Envíos a provincia por Shalom"
+        caption: &envio_msg |
+          Buenos días, *para Provincia y Distritos de Lima
+
+          se adiciona 10 soles para embalaje y dejarlo en agencia de transporte de LIMA.*
+
+          Con adelanto de 50 soles hacemos el envío de su pedido ( *por máquinas de 06 a 56 huevos* )
+
+          y 80 soles de adelanto para máquinas de 64 a 256 huevos ).
+          Máquinas d metal x determinar
+
+          El mismo día del adelanto se envía su pedido. ~_
+
+          La diferencia se paga Contraentrega cuando su pedido llega a destino~__.
+
+          *SE ENVÍA POR SHALOM* y ud paga el flete en destino. Gracias
       - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-2.mp4"
         type: "video"
       - url: "https://caim.13.140.35.117.sslip.io/media/envio-provincia-3.mp4"
@@ -442,6 +442,7 @@ products:
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-1.jpeg"
         type: "image"
+        caption: *envio_msg
       - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-2.jpeg"
         type: "image"
       - url: "https://caim.13.140.35.117.sslip.io/media/metodos-pago-3.jpeg"
