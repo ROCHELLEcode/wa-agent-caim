@@ -30,6 +30,7 @@ import { sendProductMedia } from './examples/sendProductMedia.js';
 import { derivarAAsesor } from './examples/derivarAAsesor.js';
 import { staySilent } from './examples/staySilent.js';
 import { buscarModelo } from './examples/buscarModelo.js';
+import { mostrarSeccion } from './examples/mostrarSeccion.js';
 
 /** Las herramientas que el agente tiene disponibles. Sumá las tuyas acá. */
 export const defaultTools: Tool[] = [
@@ -39,4 +40,5 @@ export const defaultTools: Tool[] = [
   derivarAAsesor,
   staySilent,
   buscarModelo,
+  mostrarSeccion,
 ];
