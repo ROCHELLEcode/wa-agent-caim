@@ -84,6 +84,12 @@ export const ycloudAdapter: ChannelAdapter = {
         return reply.code(200).send({ ok: true });
       }
 
+      // Si es un eco tuyo pero no matcheó ningún comando conocido, lo
+      // logueamos tal cual llegó — para poder ver, la próxima vez que un
+      // comando "no funcione", si fue un typo, autocorrección del celular,
+      // u otra cosa.
+      logUnmatchedEcho(request.body);
+
       const message = parseInbound(request.body);
       if (message) await ctx.enqueue(message);
       // Respondemos 200 rápido: YCloud reintenta si tardamos o si fallamos.
@@ -236,6 +242,25 @@ function parseAgentControl(payload: unknown): AgentControlCommand | null {
   if (!to || !(body in AGENT_CONTROL_COMMANDS)) return null;
 
   return { externalContactId: to, enable: AGENT_CONTROL_COMMANDS[body]! };
+}
+
+/**
+ * Loguea el texto exacto de un eco tuyo que no coincidió con ningún comando
+ * (ni AGENT_CONTROL_COMMANDS ni MEDIA_COMMANDS) — así, si un comando "no
+ * funciona", se puede ver acá qué llegó realmente (typo, autocorrección,
+ * mayúsculas con algo raro, etc.) en vez de que quede en silencio total.
+ */
+function logUnmatchedEcho(payload: unknown): void {
+  const p = payload as { type?: string; whatsappMessage?: { to?: string; text?: { body?: string } } };
+  if (p?.type !== 'whatsapp.smb.message.echoes') return;
+
+  const body = p.whatsappMessage?.text?.body ?? '';
+  if (!body.trim().startsWith('/')) return; // solo nos interesan los que PARECEN un comando
+
+  logger.warn(
+    { to: p.whatsappMessage?.to, body },
+    'ycloud: eco con pinta de comando pero no matcheó ninguno (revisar typo/autocorrección)',
+  );
 }
 
 async function applyAgentControl(command: AgentControlCommand, ctx: ChannelContext): Promise<void> {
