@@ -17,6 +17,13 @@ export interface ToolContext {
   contactName: string | null;
   store: ConversationStore;
   media: MediaItem[];
+  /**
+   * Keys de send_product_media que YA se mandaron antes en esta misma
+   * conversación (calculado del historial, no solo de este turno). Las
+   * herramientas lo usan para no reenviar una secuencia larga (fotos +
+   * descripción) que el cliente ya recibió — ver sendProductMedia.ts.
+   */
+  alreadySent: Set<string>;
 }
 
 export interface Tool {

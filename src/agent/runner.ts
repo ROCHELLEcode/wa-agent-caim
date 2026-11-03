@@ -44,6 +44,7 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
     contactName: contact.name,
     store,
     media: [],
+    alreadySent: computeAlreadySent(history),
   };
 
   const messages: ChatMessage[] = [
@@ -109,6 +110,29 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
 
   logger.warn({ conversationId: conversation.id, toolsUsed }, 'el agente agotó las iteraciones de herramientas');
   return { reply: null, toolsUsed, media: ctx.media };
+}
+
+/**
+ * Mira el historial guardado y junta las keys que send_product_media ya
+ * mandó en esta conversación (no solo en este turno). Así una herramienta
+ * puede negarse a reenviar una secuencia larga (ej. metodos_pago) que el
+ * cliente ya recibió hace un par de mensajes.
+ */
+function computeAlreadySent(history: HistoryMessage[]): Set<string> {
+  const keys = new Set<string>();
+  for (const m of history) {
+    if (m.role !== 'assistant' || !m.toolCalls) continue;
+    for (const call of m.toolCalls as ToolCall[]) {
+      if (call.type !== 'function' || call.function.name !== 'send_product_media') continue;
+      try {
+        const args = JSON.parse(call.function.arguments) as { product_key?: string };
+        if (args.product_key) keys.add(args.product_key);
+      } catch {
+        // argumentos corruptos/viejos: los ignoramos, no es crítico.
+      }
+    }
+  }
+  return keys;
 }
 
 function toChat(history: HistoryMessage[]): ChatMessage[] {
