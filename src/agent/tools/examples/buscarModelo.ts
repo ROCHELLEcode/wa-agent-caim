@@ -1,9 +1,7 @@
 import { loadConfig } from '../../../config.js';
 import { positiveNumber } from '../../args.js';
 import type { Tool } from '../index.js';
-
-/** Hasta esta capacidad (inclusive) es "pequeños"; de ahí para arriba, "grandes". */
-const LIMITE_PEQUENOS = 56;
+import { clasificar } from '../catalogoSecciones.js';
 
 /**
  * Busca el/los modelo(s) cuya capacidad (en huevos) está más cerca de la
@@ -11,9 +9,9 @@ const LIMITE_PEQUENOS = 56;
  * búsqueda de texto. Así el precio que da el bot es siempre exacto, sin
  * importar cómo el cliente escriba la capacidad (en número, en palabras, o
  * de forma vaga tipo "el más grande"). Las alternativas que devuelve son
- * siempre de la MISMA SECCIÓN que el modelo más cercano (pequeños con
- * pequeños, grandes con grandes) — no mezcla, por ejemplo, una RCAIM con
- * una PIEDRA como "cercana".
+ * siempre de la MISMA sección que el modelo más cercano (pequeños,
+ * PIEDRA o METAL) — nunca mezcla, por ejemplo, una PIEDRA con una METAL
+ * como "cercana" (METAL es su propia categoría, aparte).
  */
 export const buscarModelo: Tool = {
   definition: {
@@ -46,15 +44,13 @@ export const buscarModelo: Tool = {
       (a, b) => Math.abs(a.capacidad - capacidad) - Math.abs(b.capacidad - capacidad),
     );
     const masCercano = ordenado[0]!;
-
-    const mismaSeccion =
-      masCercano.capacidad <= LIMITE_PEQUENOS
-        ? (m: (typeof catalogo)[number]) => m.capacidad <= LIMITE_PEQUENOS
-        : (m: (typeof catalogo)[number]) => m.capacidad > LIMITE_PEQUENOS;
+    const seccionDelMasCercano = clasificar(masCercano);
 
     return {
       mas_cercano: masCercano,
-      otras_opciones_cercanas: ordenado.filter((m) => m.key !== masCercano.key && mismaSeccion(m)).slice(0, 3),
+      otras_opciones_cercanas: ordenado
+        .filter((m) => m.key !== masCercano.key && clasificar(m) === seccionDelMasCercano)
+        .slice(0, 3),
     };
   },
 };

@@ -1,16 +1,24 @@
 import { loadConfig } from '../../../config.js';
-import { positiveNumber } from '../../args.js';
+import { text } from '../../args.js';
 import type { Tool } from '../index.js';
+import { clasificar, type Seccion } from '../catalogoSecciones.js';
 
-/** Hasta esta capacidad (inclusive) es "pequeños"; de ahí para arriba, "grandes". */
-const LIMITE_PEQUENOS = 56;
+const NOMBRE: Record<Seccion, string> = {
+  pequenos: 'pequeños (6 a 56 huevos)',
+  piedra: 'grandes — línea PIEDRA (64 a 256 huevos)',
+  metal: 'industriales — línea METAL (180 a 1056 huevos)',
+};
 
 /**
  * Cuando el cliente da una capacidad vaga o un rango (no un número puntual),
- * manda TODOS los modelos de la sección correspondiente (pequeños: hasta 56
- * huevos; grandes: PIEDRA y METAL), uno foto + precio por modelo, sin otra
- * descripción — un panorama rápido para que el cliente vea opciones y elija.
- * Calculado en código sobre `catalogo`, no por criterio del modelo.
+ * manda TODOS los modelos de la sección correspondiente, una foto + precio
+ * por modelo, sin otra descripción — un panorama rápido para que el cliente
+ * vea opciones y elija. Calculado en código sobre `catalogo`, no por
+ * criterio del modelo.
+ *
+ * Tres secciones, no dos: "pequeños" es todo hasta 56 huevos. PIEDRA es la
+ * sección "grande" por defecto. METAL es aparte — solo se manda si el
+ * cliente la pide puntualmente (nunca por defecto al pedir "algo grande").
  */
 export const mostrarSeccion: Tool = {
   definition: {
@@ -18,38 +26,37 @@ export const mostrarSeccion: Tool = {
     function: {
       name: 'mostrar_seccion',
       description:
-        'Manda TODOS los modelos de la sección (pequeños hasta 56 huevos, o grandes PIEDRA/METAL) con foto y precio, sin descripción extra. Usala cuando el cliente da una capacidad vaga o un RANGO (ej. "entre 16 y 20 huevos", "una chica", "algo grande") en vez de un número puntual — así ve el panorama completo de esa sección antes de elegir. Si en cambio pidió una capacidad EXACTA, usá buscar_modelo en vez de esta.',
+        'Manda TODOS los modelos de una sección con foto y precio, sin descripción extra, para que el cliente vea el panorama y elija. "pequenos" = hasta 56 huevos. "piedra" = la línea PIEDRA (64 a 256), es la sección "grande" por defecto — usala para pedidos vagos tipo "algo grande" o "muchos huevos". "metal" = la línea METAL (180 a 1056, industrial) — SOLO usala si el cliente menciona "metal" explícitamente o pide algo más grande que 256 huevos; nunca la mandes solo porque pidieron "grande" en general.',
       parameters: {
         type: 'object',
         properties: {
-          capacidad_referencia: {
-            type: 'number',
-            description: 'La capacidad que mencionó el cliente (o cualquier valor dentro del rango que dio), para saber qué sección mostrar.',
+          seccion: {
+            type: 'string',
+            enum: ['pequenos', 'piedra', 'metal'],
+            description: 'Qué sección mostrar.',
           },
         },
-        required: ['capacidad_referencia'],
+        required: ['seccion'],
         additionalProperties: false,
       },
     },
   },
   async run(args, ctx) {
-    const capacidad = positiveNumber(args.capacidad_referencia);
-    if (!capacidad) return { error: 'Falta capacidad_referencia.' };
+    const seccionPedida = text(args.seccion);
+    if (seccionPedida !== 'pequenos' && seccionPedida !== 'piedra' && seccionPedida !== 'metal') {
+      return { error: 'seccion debe ser "pequenos", "piedra" o "metal".' };
+    }
 
     const { catalogo, products } = loadConfig();
-    const esPequenos = capacidad <= LIMITE_PEQUENOS;
-    const seccion = catalogo
-      .filter((m) => (esPequenos ? m.capacidad <= LIMITE_PEQUENOS : m.capacidad > LIMITE_PEQUENOS))
-      .sort((a, b) => a.capacidad - b.capacidad);
+    const modelos = catalogo.filter((m) => clasificar(m) === seccionPedida).sort((a, b) => a.capacidad - b.capacidad);
 
-    // Ojo: la línea PIEDRA comparte una foto "general" entre sus 4
-    // capacidades — si tomáramos siempre la primera imagen de cada modelo,
-    // las 4 colisionarían en la misma URL y solo se mandaría una (perdiendo
-    // 128/192/256 del panorama). Por eso, por cada modelo buscamos la
-    // primera imagen que TODAVÍA no usamos en este mismo panorama.
+    // La línea PIEDRA comparte una foto "general" entre sus 4 capacidades —
+    // si tomáramos siempre la primera imagen de cada modelo, colisionarían
+    // en la misma URL y se perderían capacidades del panorama. Por eso, por
+    // cada modelo buscamos la primera imagen que todavía no usamos acá.
     const urlsUsadas = new Set(ctx.media.map((m) => m.url));
     let fotosEnviadas = 0;
-    for (const modelo of seccion) {
+    for (const modelo of modelos) {
       const product = products.find((p) => p.key === modelo.key);
       const foto = product?.media.find((m) => m.type === 'image' && !urlsUsadas.has(m.url));
       if (!foto) continue;
@@ -65,8 +72,8 @@ export const mostrarSeccion: Tool = {
 
     return {
       ok: true,
-      seccion: esPequenos ? 'pequeños (hasta 56 huevos)' : 'grandes (PIEDRA y METAL)',
-      modelos: seccion.map((m) => ({ linea: m.linea, capacidad: m.capacidad, precio: m.precio, agotado: m.agotado })),
+      seccion: NOMBRE[seccionPedida],
+      modelos: modelos.map((m) => ({ linea: m.linea, capacidad: m.capacidad, precio: m.precio, agotado: m.agotado })),
       fotos_enviadas: fotosEnviadas,
     };
   },
