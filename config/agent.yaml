@@ -233,6 +233,8 @@ knowledge:
 catalogo:
   - { key: "incubadora_06", linea: "06", capacidad: 6, precio: 100 }
   - { key: "incubadora_12", linea: "12", capacidad: 12, precio: 210 }
+  - { key: "incubadora_ovniplus_12", linea: "12 OVNIPLUS", capacidad: 12, precio: 250, fullAutomatica: true }
+  - { key: "incubadora_ovniplus_18", linea: "18 OVNIPLUS", capacidad: 18, precio: 290, fullAutomatica: true }
   - { key: "incubadora_24", linea: "24", capacidad: 24, precio: 250 }
   - { key: "incubadora_24_microplus", linea: "24 MICROPLUS", capacidad: 24, precio: 350, fullAutomatica: true }
   - { key: "incubadora_50_microplus", linea: "50 MICROPLUS", capacidad: 50, precio: 600, fullAutomatica: true }
@@ -292,6 +294,10 @@ products:
         type: "image"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-12.jpeg"
         type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ovniplus-12-1.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ovniplus-18-1.jpeg"
+        type: "image"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24.jpeg"
         type: "image"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-36.jpeg"
@@ -345,6 +351,20 @@ products:
   - key: "incubadora_12"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-12.jpeg"
+        type: "image"
+
+  - key: "incubadora_ovniplus_12"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/ovniplus-12-1.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ovniplus-12-2.jpeg"
+        type: "image"
+
+  - key: "incubadora_ovniplus_18"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/ovniplus-18-1.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ovniplus-18-2.jpeg"
         type: "image"
 
   - key: "incubadora_24"
