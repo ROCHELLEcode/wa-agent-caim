@@ -10,15 +10,27 @@ system_prompt: |
   Sos el asistente de WhatsApp de CAIM, venta de incubadoras de huevos para
   todo tipo de ave de corral (gallina, pato, pavo, codorniz) en Lima, Perú.
 
-  IMPORTANTE — un saludo simple NUNCA es "ajeno" ni "soporte": si el mensaje
-  es solo un saludo genérico sin más contenido (ej. "hola", "buenas",
-  "buenos días", "buenas tardes") — típico de alguien que recién escribe por
-  primera vez —, NUNCA llames a stay_silent ni a derivar_a_asesor. Respondé
-  normal, con el saludo de bienvenida (quién sos y en qué podés ayudar), para
-  que el cliente pueda contarte qué necesita. stay_silent y derivar_a_asesor
-  son solo para cuando el mensaje YA tiene contenido claro de que es soporte
-  o de que es un tema totalmente ajeno — un saludo solo, sin nada más, no
-  alcanza para decidir eso todavía.
+  IMPORTANTE — quedarte en silencio significa perder un cliente real, así
+  que stay_silent y derivar_a_asesor son la EXCEPCIÓN, no la regla. Usalos
+  SOLO cuando el mensaje tenga evidencia CLARA e INEQUÍVOCA de ser spam, un
+  tema totalmente ajeno (ej. preguntas de clima, política, chistes, mensajes
+  para otro negocio), o un pedido de soporte/repuestos de un cliente
+  existente. Si tenés cualquier duda — y un saludo, un "info", un "catálogo",
+  una pregunta corta o ambigua SIEMPRE generan duda —, respondé normal en
+  vez de callarte. Preferí equivocarte respondiendo de más a quedarte en
+  silencio: silencio total es el peor error posible acá, mucho peor que una
+  respuesta de más. En particular:
+  - Un saludo simple ("hola", "buenas", "buenos días") NUNCA es ajeno ni
+    soporte — respondé con el saludo de bienvenida.
+  - Cualquier mensaje que mencione o sugiera incubadoras, huevos, aves de
+    corral, precio, información, catálogo, modelos, capacidad, compra,
+    envío, pago, garantía, o cualquier palabra relacionada al negocio —
+    aunque sea vago o lo preguntes con otras palabras — NUNCA es ajeno.
+    Si search_knowledge no encuentra una coincidencia clara para algo
+    vago como "info", "info porfa", "catálogo", etc., NO lo tomes como
+    señal de que el tema es ajeno — es simplemente un pedido general:
+    respondé con el saludo de bienvenida y preguntá capacidad y precio
+    (como ya se explica más abajo), nunca te quedes en silencio por eso.
 
   REGLA MÁS IMPORTANTE — solo atendés VENTAS de incubadoras nuevas:
   CAIM tiene miles de clientes existentes que a diario escriben pidiendo
@@ -84,7 +96,12 @@ system_prompt: |
     huevos la necesita y de qué precio anda buscando. No agregues nada más
     en ese mensaje: nada de specs generales, battería, garantía, ni la
     diferencia entre FULL AUTOMÁTICA y manual — eso se explica recién cuando
-    ya sepas qué modelo le interesa. No mandes catálogo ni fotos todavía.
+    ya sepas qué modelo le interesa. NO llames a mostrar_seccion, a
+    buscar_modelo ni a send_product_media en este caso — no mandes catálogo,
+    fotos NI videos todavía: esperá a que te diga capacidad o precio.
+    (search_knowledge sí podés usarla si hace falta, no manda nada al
+    cliente por sí sola.) "No quedarte en silencio" significa responder con
+    este saludo y esta pregunta — NUNCA significa mandar fotos de una.
   - Hay DOS casos distintos según cómo pida la capacidad — fijate bien cuál
     es antes de responder:
 
@@ -324,19 +341,16 @@ products:
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-06.jpeg"
         type: "image"
-        caption: "Incubadora automática 06 huevos - S/100"
 
   - key: "incubadora_12"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-12.jpeg"
         type: "image"
-        caption: "Incubadora automática 12 huevos - S/210"
 
   - key: "incubadora_24"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24.jpeg"
         type: "image"
-        caption: "Incubadora automática 24 huevos - S/250"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-1.mp4"
         type: "video"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-2.mp4"
@@ -348,10 +362,8 @@ products:
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-microplus.jpeg"
         type: "image"
-        caption: "Incubadora full automática MICROPLUS 24 huevos - S/350"
       - url: "https://caim.13.140.35.117.sslip.io/media/sin-identificar-1.jpeg"
         type: "image"
-        caption: "Incubadora full automática MICROPLUS 24 huevos - S/350"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-microplus.mp4"
         type: "video"
 
@@ -362,10 +374,8 @@ products:
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-microplus.jpeg"
         type: "image"
-        caption: "Incubadora full automática MICROPLUS (misma línea) - la de 50 huevos es S/600"
       - url: "https://caim.13.140.35.117.sslip.io/media/sin-identificar-1.jpeg"
         type: "image"
-        caption: "Incubadora full automática MICROPLUS (misma línea) - la de 50 huevos es S/600"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-24-microplus.mp4"
         type: "video"
 
@@ -373,37 +383,30 @@ products:
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-26-ovni.jpeg"
         type: "image"
-        caption: "Incubadora automática OVNI 26 huevos - S/170"
 
   - key: "incubadora_52_ovni"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-52-ovni.jpeg"
         type: "image"
-        caption: "Incubadora automática OVNI 52 huevos - S/230"
 
   - key: "incubadora_36"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-36.jpeg"
         type: "image"
-        caption: "Incubadora automática 36 huevos - S/320"
 
   - key: "incubadora_48_rcaim"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-48-rcaim-1.jpeg"
         type: "image"
-        caption: "Incubadora RCAIM 48 huevos - S/440"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-48-rcaim-2.jpeg"
         type: "image"
-        caption: "Incubadora RCAIM 48 huevos - S/440"
 
   - key: "incubadora_56_rcaim"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-56-rcaim-1.jpeg"
         type: "image"
-        caption: "Incubadora RCAIM 56 huevos - S/540"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-56-rcaim-2.jpeg"
         type: "image"
-        caption: "Incubadora RCAIM 56 huevos - S/540"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-56-rcaim-1.mp4"
         type: "video"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-56-rcaim-2.mp4"
@@ -462,7 +465,6 @@ products:
         type: "video"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-64.jpeg"
         type: "image"
-        caption: "Incubadora PIEDRA 64 huevos - S/450"
 
   - key: "incubadora_piedra_128"
     media:
@@ -487,7 +489,6 @@ products:
         type: "video"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-128.jpeg"
         type: "image"
-        caption: "Incubadora PIEDRA 128 huevos - S/580"
 
   - key: "incubadora_piedra_192"
     media:
@@ -512,7 +513,6 @@ products:
         type: "video"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-192.jpeg"
         type: "image"
-        caption: "Incubadora PIEDRA 192 huevos - S/790"
 
   - key: "incubadora_piedra_256"
     media:
@@ -537,31 +537,26 @@ products:
         type: "video"
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-piedra-256.jpeg"
         type: "image"
-        caption: "Incubadora PIEDRA 256 huevos - S/950"
 
   - key: "incubadora_metal_180"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-180.jpeg"
         type: "image"
-        caption: "Incubadora de METAL 180 huevos - S/1300 (AGOTADO)"
 
   - key: "incubadora_metal_240"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-240.jpeg"
         type: "image"
-        caption: "Incubadora de METAL 240 huevos - S/1500 (AGOTADO)"
 
   - key: "incubadora_metal_500"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-500.jpeg"
         type: "image"
-        caption: "Incubadora de METAL 500 huevos - S/2500"
 
   - key: "incubadora_metal_1056"
     media:
       - url: "https://caim.13.140.35.117.sslip.io/media/incubadora-metal-1056.jpeg"
         type: "image"
-        caption: "Incubadora de METAL 1056 huevos - S/3100 (AGOTADO)"
 
   # metodos_pago: SOLO lo que hay en la carpeta "formadepago" (4 fotos, sin
   # videos) + la descripción de envío como caption de la foto 2. Nunca hay
