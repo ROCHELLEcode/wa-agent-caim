@@ -88,11 +88,22 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
     }
 
     let staySilentCalled = false;
+    let mostrarSeccionPequenos = false;
+    let mostrarSeccionNoPequenos = false;
     for (const call of toolCalls) {
       if (call.type !== 'function') continue;
       const name = call.function.name;
       toolsUsed.push(name);
       if (name === 'stay_silent') staySilentCalled = true;
+      if (name === 'mostrar_seccion') {
+        try {
+          const a = JSON.parse(call.function.arguments) as { seccion?: string };
+          if (a.seccion === 'pequenos') mostrarSeccionPequenos = true;
+          else if (a.seccion) mostrarSeccionNoPequenos = true;
+        } catch {
+          // argumentos corruptos: no es crítico acá, se maneja en runTool.
+        }
+      }
 
       const result = await runTool(toolMap, name, call.function.arguments, ctx);
       const content = JSON.stringify(result);
@@ -101,9 +112,15 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
       messages.push({ role: 'tool', tool_call_id: call.id, content });
     }
 
-    // stay_silent corta el turno acá: no dejamos que el modelo escriba texto
-    // después (en la práctica, termina explicando por qué se queda callado).
-    if (staySilentCalled) {
+    // Silencio determinístico (regla de negocio, no dejamos esto librado a
+    // que el modelo se acuerde de llamar stay_silent todas las veces):
+    // - mostrar_seccion con seccion="pequenos" SIEMPRE corta el turno sin
+    //   texto, lo haya pedido el cliente vago/chico o de forma genérica.
+    // - stay_silent (ej. mensaje ajeno) también corta el turno.
+    // - PERO mostrar_seccion con PIEDRA/METAL NUNCA es silencioso (siempre
+    //   lleva texto de presentación) — si el modelo llamó a stay_silent de
+    //   todas formas (confundiéndolo con el caso "pequeños"), lo ignoramos.
+    if ((staySilentCalled || mostrarSeccionPequenos) && !mostrarSeccionNoPequenos) {
       return { reply: null, toolsUsed, media: ctx.media };
     }
   }
