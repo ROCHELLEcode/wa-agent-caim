@@ -37,6 +37,7 @@ const MEDIA_COMMANDS: Record<string, string> = {
   '/fp': 'metodos_pago',
   '/dd': 'ubicacion',
   '/sh': 'shalom_videos',
+  '/tutorcaim': 'tutorial_56_rcaim',
 };
 
 /**

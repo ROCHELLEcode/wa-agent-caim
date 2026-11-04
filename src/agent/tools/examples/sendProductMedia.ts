@@ -8,7 +8,17 @@ import type { Tool } from '../index.js';
  * (products: [{ key, media: [{ url, type, caption }] }]).
  */
 const { products } = loadConfig();
-const productKeys = products.map((p) => p.key);
+
+/**
+ * Contenido que SOLO se manda con un comando manual del dueño (ver
+ * MEDIA_COMMANDS en src/channels/ycloud/adapter.ts) — la IA no tiene que
+ * mandarlo nunca por su cuenta, así que ni siquiera aparece como opción
+ * en esta herramienta (y el guard en run() lo bloquea igual, por las
+ * dudas de que algún día se llame con un argumento armado a mano).
+ */
+const MANUAL_ONLY = new Set(['catalogo_general', 'shalom_videos', 'tutorial_56_rcaim']);
+
+const productKeys = products.map((p) => p.key).filter((k) => !MANUAL_ONLY.has(k));
 
 /**
  * Secuencias largas (fotos + descripción) que NO hay que repetir si ya se
@@ -44,6 +54,10 @@ export const sendProductMedia: Tool = {
   async run(args, ctx) {
     const key = text(args.product_key);
     if (!key) return { error: 'Falta product_key.' };
+
+    if (MANUAL_ONLY.has(key)) {
+      return { error: `"${key}" no está disponible para vos, solo se manda con un comando manual del dueño.` };
+    }
 
     const product = products.find((p) => p.key === key);
     if (!product || product.media.length === 0) {

@@ -288,6 +288,44 @@ catalogo:
 # Los archivos están en public/media/ de este repo y se sirven en
 # https://caim.13.140.35.117.sslip.io/media/<archivo> (la propia app los sirve, no GitHub).
 products:
+  # Tutorial de uso de la RCAIM 56: se manda SOLO con el comando manual
+  # /tutorcaim (vos lo escribís en la app) — la IA nunca llama a esto, no
+  # está disponible como send_product_media. Orden fijo: 1 a 5. Cada video
+  # lleva la descripción de su nombre de archivo original, excepto el 2
+  # ("DESCRIPCION GRANDE"), que lleva el texto del tablero/temperatura en
+  # vez del nombre.
+  - key: "tutorial_56_rcaim"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-56-rcaim-1.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-56-rcaim-2.mp4"
+        type: "video"
+        caption: |
+          Manejo tablero
+
+          Tabla Temperatura gallina
+
+          Día 1 al 18 puede usar 38 ò 37.8 dependiendo el clima
+
+          Del día 19 al 21 usar 37.6
+
+          Humedad
+          Día 1 al 18 55 a 60%
+          Día 19 al 21 65 a 70%
+
+          Retirar las barras de separación de huevos el día 19 o 3 días antes de los nacimientos
+
+          Los respiraderos cerrados la mitad
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-56-rcaim-3.mp4"
+        type: "video"
+        caption: "Sistema de humedad"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-56-rcaim-4.mp4"
+        type: "video"
+        caption: "Colocación de los huevos"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-56-rcaim-5.mp4"
+        type: "video"
+        caption: "Humedad"
+
   # Videos de envío por Shalom: se mandan con el comando manual /sh, sin
   # ninguna descripción (solo los archivos, en crudo).
   - key: "shalom_videos"
