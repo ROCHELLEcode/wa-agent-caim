@@ -400,6 +400,145 @@ products:
         type: "video"
         caption: "Bandeja de 50 h van 6 tubos y en la bandeja de 24 van 5 tubos"
 
+  # Tutorial de uso de la 12 HHD: se manda SOLO con el comando manual
+  # /tuto12hhd — la IA nunca llama a esto. Orden fijo 1 a 3 (fotos). Los
+  # ítems 1 y 2 no tienen descripción propia (el nombre de archivo es solo
+  # el número), así que llevan el link de YouTube correspondiente pegado
+  # debajo sin encabezado. El ítem 3 ("DESCRIPCION") lleva el texto grande
+  # de recomendaciones en vez del nombre, sin link.
+  - key: "tutorial_12hhd"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-12hhd-1.jpg"
+        type: "image"
+        caption: "https://youtu.be/uZqb-ZiwuCs"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-12hhd-2.jpg"
+        type: "image"
+        caption: "https://youtu.be/qH-CE5-sN1M"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-12hhd-3.jpg"
+        type: "image"
+        caption: |
+          Temperatura gallina
+          38 grados Día 1 al 7
+          37.8 día 8 al 18
+          37.6 del 19 al 21
+
+          Humedad: Mantener lleno el canal del medio del día uno al siete,
+          siempre lleno del ocho al 14 días mantener lleno los tres canales
+          del medio, y del 15 para adelante lleno todos los canales — esto
+          es para la humedad, la bandeja blanca que está abajo de los
+          huevos.
+
+          Tutoriales en YouTube: incubadoras Caim
+          Facebook: caim Import Export
+
+  # Tutorial de uso de la de 36 huevos: se manda SOLO con el comando manual
+  # /tuto36 — la IA nunca llama a esto. Orden fijo 1 a 4 (videos). El ítem 1
+  # ("DESCRIPCION") lleva el texto grande de recomendaciones en vez del
+  # nombre, sin link (no hay archivos LINK en esta carpeta). El ítem 4 no
+  # tiene descripción propia (el nombre de archivo es solo el número).
+  - key: "tutorial_36"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-36-1.mp4"
+        type: "video"
+        caption: |
+          Tabla de temperaturas gallina
+          Día 1 al 7: 38.0 C°
+          Día 8 al 18: 37.8 C°
+          Día 19 al 21: 37.6 C°
+
+          Humedad:
+          Día 1 al 18: 60%
+          Día 19 al 21: 65% a 70%
+
+          Ver video: usar la máquina con tecnopor. El agua poner poco
+          cuando la humedad baje a 54 y mantener entre 55 y 60 hasta día
+          18. Después del día 18 puede poner más agua según se requiera
+          la humedad.
+
+          Los huevos: sacarlos diario del nido, guardarlos con la punta
+          hacia abajo, no más de 10 días de antigüedad antes de ingresar
+          a la máquina. No lavarlos, no calentarlos.
+
+          Nota: retirar la rotación 3 días antes de los nacimientos, y
+          esos días bajar la temperatura y subir la humedad (ver su
+          tabla).
+
+          Nota: no incubar a temperatura ambiente menor de 10 grados
+          (clima).
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-36-2.mp4"
+        type: "video"
+        caption: "Regresar los días a 1"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-36-3.mp4"
+        type: "video"
+        caption: "Colocación de agua"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-36-4.mp4"
+        type: "video"
+
+  # Tutorial de uso de las incubadoras de METAL: se manda SOLO con el
+  # comando manual /tutometal — la IA nunca llama a esto. Orden fijo 1 a
+  # 10 (las primeras 4 son fotos, el resto videos). Los ítems 1, 2 y 4
+  # llevan el link de YouTube correspondiente pegado debajo (tal cual
+  # estaba en los archivos LINK 1/2/4 de la carpeta — el ítem 4 se llama
+  # "VIDEO 2" en su archivo pero le corresponde LINK 4, no hay error, así
+  # estaba armado en la carpeta). El ítem 3 ("DESCRIPCION") lleva el texto
+  # grande de recomendaciones en vez del nombre, sin link.
+  - key: "tutorial_metal"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-metal-1.jpg"
+        type: "image"
+        caption: |
+          VIDEO 1:
+          https://youtu.be/L7SKfgXXemM
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-metal-2.jpg"
+        type: "image"
+        caption: "VIDEO Sistema de humedad: https://youtu.be/Vh2PBfwMu_E"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-metal-3.jpg"
+        type: "image"
+        caption: |
+          Temperatura gallina
+          38 grados Día 1 al 18
+          37.2 del 19 al 21
+
+          Humedad:
+          60% día 1 al 18
+          65% día 19 al 21
+
+          Nota: retirar la rotación 3 días antes de los nacimientos. Y
+          esos días bajar la temperatura y subir la humedad (ver su
+          tabla).
+
+          Tutoriales en YouTube: incubadoras Caim
+          Facebook: caim Import Export
+
+          Los huevos: sacarlos diario del nido, guardarlos con la punta
+          hacia abajo, no más de 10 días de antigüedad antes de ingresar
+          a la máquina. No lavarlos, no calentarlos.
+
+          Nota: no incubar a menos de 10 grados temperatura ambiente.
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-metal-4.jpg"
+        type: "image"
+        caption: |
+          Video 2
+
+          https://youtu.be/oslZIOhogyY?si=Y4M3DBLuIihwZ5IF
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-metal-5.mp4"
+        type: "video"
+        caption: "Sistema de humedad: balde, instalar con gasfitero si no puede"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-metal-6.mp4"
+        type: "video"
+        caption: "Conexión de bandeja de humedad con retén"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-metal-7.mp4"
+        type: "video"
+        caption: "Conexiones"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-metal-8.mp4"
+        type: "video"
+        caption: "Manejo de tablero: video corto, ver links para más información"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-metal-9.mp4"
+        type: "video"
+        caption: "Cambiar los modos de incubación"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-metal-10.mp4"
+        type: "video"
+
   # Videos de envío por Shalom: se mandan con el comando manual /sh, sin
   # ninguna descripción (solo los archivos, en crudo).
   - key: "shalom_videos"

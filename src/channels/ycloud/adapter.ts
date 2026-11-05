@@ -39,6 +39,9 @@ const MEDIA_COMMANDS: Record<string, string> = {
   '/sh': 'shalom_videos',
   '/tutorcaim': 'tutorial_56_rcaim',
   '/tutomicro': 'tutorial_microplus',
+  '/tuto12hhd': 'tutorial_12hhd',
+  '/tuto36': 'tutorial_36',
+  '/tutometal': 'tutorial_metal',
 };
 
 /**
