@@ -326,6 +326,80 @@ products:
         type: "video"
         caption: "Humedad"
 
+  # Tutorial de uso de la MICROPLUS: se manda SOLO con el comando manual
+  # /tutomicro — la IA nunca llama a esto, no está disponible como
+  # send_product_media. Orden fijo: 1 a 10 (las primeras 4 son fotos, el
+  # resto videos). Los ítems 1, 2 y 3 llevan la descripción de su nombre de
+  # archivo original MÁS el link de YouTube correspondiente pegado debajo.
+  # El ítem 4 ("DESCRIPCION") lleva el texto grande de recomendaciones en
+  # vez del nombre, sin link. Los ítems 5 a 10 solo llevan la descripción
+  # de su nombre de archivo, sin link.
+  - key: "tutorial_microplus"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-microplus-1.jpg"
+        type: "image"
+        caption: |
+          Manejo de tablero y regresar días a 1
+
+          https://youtu.be/XIl1ltbECUU?si=ahlvArTp_nD_1AQa
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-microplus-2.jpg"
+        type: "image"
+        caption: |
+          Sistema de humedad
+
+          VIDEO2 : Sistema Humedad
+
+          https://youtu.be/vjZ-GEwDVVU?si=raULAgP4FpyWiDFg
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-microplus-3.jpg"
+        type: "image"
+        caption: |
+          Instalación de bandejas / Rotación
+
+          https://youtu.be/36zuWex5OPA?si=R-c91phFvOJuDdoG
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-microplus-4.jpg"
+        type: "image"
+        caption: |
+          Recomendacion:
+          *Usar en modo 24 h o manual
+
+          Temperaturas gallina
+          38 grados Día 1 al 18 ……
+          37.3 del 19 al 21 …
+          Humedad : 60% día 1 al 18 …y 70 % día 19 al 21
+          caim Import Export
+
+          LEER:
+
+          LOS HUEVOS :
+          sacarlos diario del nido
+          Guardarlos con la punta hacia abajo en lugar fresco
+          no más de 10 días de antigüedad antes de ingresar a la máquina . No lavarlos no calentarlos
+
+          NOTA: NO INCUBAR a TEMPERATURAS AMBIENTE menor de 10 grados (clima)*
+
+          Nota : retirar la rotación 3 días antes de los nacimientos
+          Y esos días bajar la temperatura y subir la humedad VER SU TABLA
+
+          IMPORTANTE: El giro de los huevos es cada 90 minutos durante 20 segundos y es Automático. NO DEBE GIRAR SIN PARAR
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-microplus-5.mp4"
+        type: "video"
+        caption: "Limpieza"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-microplus-6.mp4"
+        type: "video"
+        caption: "Si la humedad no sube"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-microplus-7.mp4"
+        type: "video"
+        caption: "Tip de rotación"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-microplus-8.mp4"
+        type: "video"
+        caption: "Regresar días 1 y funciones que no hay que modificar"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-microplus-9.mp4"
+        type: "video"
+        caption: "Modos de incubación"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-microplus-10.mp4"
+        type: "video"
+        caption: "Bandeja de 50 h van 6 tubos y en la bandeja de 24 van 5 tubos"
+
   # Videos de envío por Shalom: se mandan con el comando manual /sh, sin
   # ninguna descripción (solo los archivos, en crudo).
   - key: "shalom_videos"

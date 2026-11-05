@@ -16,7 +16,7 @@ const { products } = loadConfig();
  * en esta herramienta (y el guard en run() lo bloquea igual, por las
  * dudas de que algún día se llame con un argumento armado a mano).
  */
-const MANUAL_ONLY = new Set(['catalogo_general', 'shalom_videos', 'tutorial_56_rcaim']);
+const MANUAL_ONLY = new Set(['catalogo_general', 'shalom_videos', 'tutorial_56_rcaim', 'tutorial_microplus']);
 
 const productKeys = products.map((p) => p.key).filter((k) => !MANUAL_ONLY.has(k));
 
