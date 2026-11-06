@@ -1,7 +1,7 @@
 import { loadConfig } from '../../../config.js';
 import { positiveNumber } from '../../args.js';
 import type { Tool } from '../index.js';
-import { clasificar } from '../catalogoSecciones.js';
+import { clasificar, nombreModelo } from '../catalogoSecciones.js';
 
 /**
  * Busca el/los modelo(s) cuya capacidad (en huevos) está más cerca de la
@@ -57,11 +57,12 @@ export const buscarModelo: Tool = {
     ctx.media.push(...nuevos);
 
     return {
-      mas_cercano: masCercano,
+      mas_cercano: { ...masCercano, nombre: nombreModelo(masCercano) },
       fotos_videos_enviados: nuevos.length,
       otras_opciones_cercanas: ordenado
         .filter((m) => m.key !== masCercano.key && clasificar(m) === seccionDelMasCercano)
-        .slice(0, 3),
+        .slice(0, 3)
+        .map((m) => ({ ...m, nombre: nombreModelo(m) })),
     };
   },
 };

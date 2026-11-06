@@ -20,3 +20,35 @@ export function clasificar(modelo: Modelo): Seccion {
   if (modelo.linea.startsWith('METAL')) return 'metal';
   return 'pequenos';
 }
+
+/**
+ * Nombre del modelo en el orden que pidió el negocio: SIEMPRE la cantidad
+ * seguida de "huevos", y recién después el código del modelo si tiene uno
+ * (ej. "12 huevos HHD", "26 huevos OVNI", "128 huevos PIEDRA") — nunca el
+ * código pegado al número antes de "huevos" (mal: "12 HHD huevos"), porque
+ * confunde al cliente sobre qué número es la cantidad de huevos.
+ *
+ * `linea` ya trae la cantidad mezclada con el código en formatos distintos
+ * ("12 HHD", pero "PIEDRA 128"), así que se la sacamos y reconstruimos el
+ * texto siempre igual, en vez de usar `linea` tal cual.
+ */
+export function nombreModelo(modelo: Modelo): string {
+  const linea = modelo.linea.trim();
+
+  // Línea sin código extra, es solo el número (a veces con cero a la
+  // izquierda, ej. "06" para 6 huevos): no hay nada que reordenar.
+  if (/^0*\d+$/.test(linea) && Number(linea) === modelo.capacidad) {
+    return `${modelo.capacidad} huevos`;
+  }
+
+  const num = String(modelo.capacidad);
+  let codigo = linea;
+  if (codigo.startsWith(`${num} `)) {
+    codigo = codigo.slice(num.length);
+  } else if (codigo.endsWith(` ${num}`)) {
+    codigo = codigo.slice(0, codigo.length - num.length);
+  }
+  codigo = codigo.trim();
+
+  return codigo ? `${modelo.capacidad} huevos ${codigo}` : `${modelo.capacidad} huevos`;
+}

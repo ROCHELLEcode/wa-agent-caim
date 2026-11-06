@@ -1,7 +1,7 @@
 import { loadConfig } from '../../../config.js';
 import { text } from '../../args.js';
 import type { Tool } from '../index.js';
-import { clasificar, type Seccion } from '../catalogoSecciones.js';
+import { clasificar, nombreModelo, type Seccion } from '../catalogoSecciones.js';
 
 const NOMBRE: Record<Seccion, string> = {
   pequenos: 'pequeños (6 a 56 huevos)',
@@ -65,7 +65,7 @@ export const mostrarSeccion: Tool = {
       ctx.media.push({
         url: foto.url,
         type: 'image',
-        caption: `${modelo.linea} huevos - S/${modelo.precio}${modelo.agotado ? ' (AGOTADO)' : ''}`,
+        caption: `${nombreModelo(modelo)} - S/${modelo.precio}${modelo.agotado ? ' (AGOTADO)' : ''}`,
       });
       fotosEnviadas++;
     }
