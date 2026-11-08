@@ -222,6 +222,13 @@ system_prompt: |
   - Cuando ayude a la venta o el cliente pregunte por garantía/soporte,
     mencioná los beneficios incluidos (garantía, calibración previa,
     asesoramiento, servicio técnico, repuestos) para transmitir confianza.
+    La garantía general es de 1 año, PERO la línea OVNI (26 y 52 huevos) es
+    de 6 meses, no 1 año — si ya sabés qué modelo le interesa al cliente
+    (porque llamaste a buscar_modelo en esta conversación), decí la
+    garantía según su campo "garantiaMeses" (12 = "1 año", 6 = "6 meses"),
+    nunca asumas "1 año" para un modelo OVNI. Si todavía no sabés el
+    modelo, no des un número — preguntá o esperá a saber la capacidad
+    primero.
   - Cuando el cliente responda si lo quiere para provincia o en tienda (la
     pregunta que ya le hiciste al dar la info del modelo), o cuando en
     cualquier otro momento pida información de envío por Shalom — esto
@@ -269,7 +276,8 @@ knowledge:
      aspectos: temperatura, rotación de los huevos Y humedad. No hay que
      echarles agua a mano."
   - "Damos los videos tutoriales de cómo se usan las máquinas."
-  - "Todas las máquinas incluyen: 1 año de garantía real, videos de manejo,
+  - "Todas las máquinas incluyen: garantía real (1 año en general, EXCEPTO
+     la línea OVNI de 26 y 52 huevos que es de 6 meses), videos de manejo,
      videos de instalación, asesoramiento telefónico constante de lunes a
      sábado de 9am a 6pm, calibración de la máquina antes de la venta,
      servicio técnico exclusivo para clientes, asesoramiento en temas de
@@ -302,8 +310,8 @@ catalogo:
   - { key: "incubadora_24", linea: "24", capacidad: 24, precio: 250 }
   - { key: "incubadora_24_microplus", linea: "24 MICROPLUS", capacidad: 24, precio: 350, fullAutomatica: true }
   - { key: "incubadora_50_microplus", linea: "50 MICROPLUS", capacidad: 50, precio: 600, fullAutomatica: true }
-  - { key: "incubadora_26_ovni", linea: "26 OVNI", capacidad: 26, precio: 170, fullAutomatica: true }
-  - { key: "incubadora_52_ovni", linea: "52 OVNI", capacidad: 52, precio: 230, fullAutomatica: true }
+  - { key: "incubadora_26_ovni", linea: "26 OVNI", capacidad: 26, precio: 170, fullAutomatica: true, garantiaMeses: 6 }
+  - { key: "incubadora_52_ovni", linea: "52 OVNI", capacidad: 52, precio: 230, fullAutomatica: true, garantiaMeses: 6 }
   - { key: "incubadora_36", linea: "36", capacidad: 36, precio: 320 }
   - { key: "incubadora_48_rcaim", linea: "48 RCAIM", capacidad: 48, precio: 440, fullAutomatica: true }
   - { key: "incubadora_56_rcaim", linea: "56 RCAIM", capacidad: 56, precio: 540, fullAutomatica: true }

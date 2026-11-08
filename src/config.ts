@@ -35,6 +35,10 @@ const modeloSchema = z.object({
   precio: z.number(),
   fullAutomatica: z.boolean().default(false),
   agotado: z.boolean().default(false),
+  /** La garantía general es 12 meses (1 año) — algunos modelos tienen una
+   * garantía distinta (ej. la línea OVNI son 6 meses), así que es un campo
+   * por modelo en vez de un dato fijo en el texto del prompt. */
+  garantiaMeses: z.number().default(12),
 });
 
 const schema = z.object({
