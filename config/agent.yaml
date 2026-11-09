@@ -586,6 +586,294 @@ products:
       - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-metal-10.mp4"
         type: "video"
 
+  # ───────────────────────────────────────────────────────────────
+  # Carpeta "ultimos videos" del escritorio: material de catálogo/detalle
+  # por modelo, cada subcarpeta con su propio comando manual (el comando
+  # va al final del nombre de la carpeta, después de ":"). Todos
+  # manual-only, igual que los tutoriales — la IA no los manda nunca.
+  # ───────────────────────────────────────────────────────────────
+
+  # "56 RCAIM" -> /inforcaim
+  - key: "info_56rcaim"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-56rcaim-1.jpg"
+        type: "image"
+        caption: "Full automática con bomba de agua inteligente, siempre humectada automáticamente"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-56rcaim-2.jpg"
+        type: "image"
+        caption: "48 huevos 440 soles"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-56rcaim-3.jpg"
+        type: "image"
+        caption: "56 huevos 540 soles"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-56rcaim-4.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-56rcaim-5.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-56rcaim-6.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-56rcaim-7.mp4"
+        type: "video"
+
+  # "CATALOGO METAL" -> /infometal2
+  - key: "info_catalogometal"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-catalogometal-1.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-catalogometal-2.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-catalogometal-3.jpg"
+        type: "image"
+        caption: "240 huevos S/. 1500 soles"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-catalogometal-4.jpg"
+        type: "image"
+        caption: "180 huevos S/. 1300 soles"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-catalogometal-5.jpg"
+        type: "image"
+
+  # "DETALLE 24 INCUBADORA DE RECTANGULAR" -> /info24
+  - key: "info_24"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-24-1.mp4"
+        type: "video"
+        caption: "Incubadora de 24 huevos 250 soles. A corriente y también se puede conectar a batería, rotación automática de huevos."
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-24-2.mp4"
+        type: "video"
+        caption: "https://rastrea.shalom.pe/"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-24-3.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-24-4.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-24-5.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-24-6.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-24-7.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-24-8.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-24-9.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-24-10.jpg"
+        type: "image"
+        caption: |
+          Incluye:
+          🥚Garantía Real
+          🥚Videos de manejo
+          🥚Videos de instalación
+          🥚Asesoramiento telefónico constante de lunes a sábado 9am a 6pm
+          🥚Calibración de máquina antes de la venta.
+          🥚Servicio Técnico *solo para clientes
+          🥚Repuestos
+
+          NOTA: Son máquinas calibradas No se deje estafar!!
+
+  # "DETALLE 12 HUEVOS" -> /info12
+  # NOTA: esta carpeta no traía "TEXTO 1", sino un "12.textClipping" suelto
+  # (sin foto/video propio) con el mismo texto de intro que usan las otras
+  # carpetas "DETALLE N HUEVOS" en su ítem 1 — se interpretó como la
+  # descripción del ítem 1 por ese patrón. Confirmar con el dueño si no es
+  # así.
+  - key: "info_12"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-12-1.mp4"
+        type: "video"
+        caption: "Incubadora de 12 huevos 210 soles. A corriente y también se puede conectar a batería, rotación automática de huevos."
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-12-2.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-12-3.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-12-4.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-12-5.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-12-6.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-12-7.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-12-8.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-12-9.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-12-10.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-12-11.jpg"
+        type: "image"
+
+  # "DETALLE 6 HUEVOS" -> /info6
+  - key: "info_06"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-06-1.jpg"
+        type: "image"
+        caption: "Incubadora de 06 huevos 100 soles. A corriente 220v, rotación automática de huevos."
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-06-2.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-06-3.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-06-4.jpg"
+        type: "image"
+        caption: |
+          https://maps.app.goo.gl/CuUyMRsNd79PTjoe7
+
+          🐣Dirección: AV. 12 de octubre 2501. Distrito: SAN MARTIN DE PORRES a 10 minutos de megaplaza
+
+          🐣Referencia: A 3 cuadras de la av. IZAGUIRRE. Al costado de FRENOS WILY
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-06-5.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-06-6.jpg"
+        type: "image"
+        caption: "PRECIOS Y FOTOS AQUÍ 👇👇👉🏻👉🏻 CLIC 👉🏻 WhatsApp: https://wa.me/c/51955563344"
+
+  # "DETALLES DE 64 PIEDRA" -> /infopiedra1
+  - key: "info_piedra64"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra64-1.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra64-2.jpg"
+        type: "image"
+        caption: |
+          Incluye:
+          🥚1 año de Garantía Real
+          🥚Videos de manejo
+          🥚Videos de instalación
+          🥚Asesoramiento telefónico constante de lunes a sábado 9am a 6pm
+          🥚Calibración de máquina antes de la venta.
+          🥚Servicio Técnico solo para clientes
+          🥚Asesoramiento en temas de Incubación gallina pato pavo etc
+          🥚Todo tipo de repuestos garantizados
+
+          NOTA: Son máquinas calibradas No se deje estafar!!
+
+          🔥Máquinas de 64 a 256 huevos además de regalo:
+
+          🐣01 comedero tolva
+          🐣01 bebedero tolva para pollito
+          🐣01 cable conexión a batería
+          🐣Ovoscopio,
+          🐣linterna
+          🐣dona humidificadora
+
+          🔊🔊🔊NOTA IMPORTANTE: Los regalos son sujetos a variaciones según stock 🔊🔊🔊
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra64-3.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra64-4.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra64-5.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra64-6.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra64-7.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra64-8.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra64-9.jpeg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra64-10.jpeg"
+        type: "image"
+        caption: |
+          https://maps.app.goo.gl/CuUyMRsNd79PTjoe7
+
+          🐣Dirección: AV. 12 de octubre 2501. Distrito: SAN MARTIN DE PORRES a 10 minutos de megaplaza
+
+          🐣Referencia: A 3 cuadras de la av. IZAGUIRRE. Al costado de FRENOS WILY
+
+  # "DETALLES PIEDRA (2)" -> /infopiedra2
+  - key: "info_piedra2"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra2-1.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra2-2.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra2-3.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra2-4.mp4"
+        type: "video"
+
+  # "INFO METAL" -> /infometal (en la carpeta original faltan los ítems 3 y
+  # 4, se respeta el salto en la numeración tal cual estaba)
+  - key: "info_metal"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-metal-1.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-metal-2.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-metal-5.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-metal-6.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-metal-7.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-metal-8.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-metal-9.jpg"
+        type: "image"
+        caption: |
+          Incluye:
+          🥚Garantía Real 01 año
+          🥚Videos de manejo
+          🥚Videos de instalación
+          🥚Asesoramiento telefónico constante de lunes a sábado 9am a 6pm
+          🥚Calibración de máquina antes de la venta.
+          🥚Servicio Técnico *solo para clientes
+          🥚Repuestos garantizados
+          💢Regalos:
+          🥚 01 Ovoscopio recargable 220 v
+          01 Inversor de corriente 500 watt (para conectarse directo a batería en caso corte luz)
+          🥚 01 eje de bandeja humedad repuesto
+          🥚 8 bandejas nacedoras
+
+          NOTA: Son máquinas calibradas No se deje estafar!!
+
+  # "TESTIMONIO PIEDRA 128" -> /info128
+  - key: "info_piedra128"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-1.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-2.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-3.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-4.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-5.jpg"
+        type: "image"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-6.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-7.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-8.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-9.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-10.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-11.mp4"
+        type: "video"
+      - url: "https://caim.13.140.35.117.sslip.io/media/info-piedra128-12.jpg"
+        type: "image"
+        caption: |
+          Incluye:
+          🥚1 año de Garantía Real
+          🥚Videos de manejo
+          🥚Videos de instalación
+          🥚Asesoramiento telefónico constante de lunes a sábado 9am a 6pm
+          🥚Calibración de máquina antes de la venta.
+          🥚Servicio Técnico solo para clientes
+          🥚Asesoramiento en temas de Incubación gallina pato pavo etc
+          🥚Todo tipo de repuestos garantizados
+
+          NOTA: Son máquinas calibradas No se deje estafar!!
+
+          🔥Máquinas de 64 a 256 huevos además de regalo:
+
+          🐣01 comedero tolva
+          🐣01 bebedero tolva para pollito
+          🐣01 cable conexión a batería
+          🐣Ovoscopio,
+          🐣linterna
+          🐣dona humidificadora
+
+          🔊🔊🔊NOTA IMPORTANTE: Los regalos son sujetos a variaciones según stock 🔊🔊🔊
+
   # Videos de envío por Shalom: se mandan con el comando manual /sh, sin
   # ninguna descripción (solo los archivos, en crudo).
   - key: "shalom_videos"

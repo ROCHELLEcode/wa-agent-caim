@@ -24,6 +24,15 @@ const MANUAL_ONLY = new Set([
   'tutorial_12hhd',
   'tutorial_36',
   'tutorial_metal',
+  'info_56rcaim',
+  'info_catalogometal',
+  'info_24',
+  'info_12',
+  'info_06',
+  'info_piedra64',
+  'info_piedra2',
+  'info_metal',
+  'info_piedra128',
 ]);
 
 const productKeys = products.map((p) => p.key).filter((k) => !MANUAL_ONLY.has(k));

@@ -42,6 +42,15 @@ const MEDIA_COMMANDS: Record<string, string> = {
   '/tuto12hhd': 'tutorial_12hhd',
   '/tuto36': 'tutorial_36',
   '/tutometal': 'tutorial_metal',
+  '/inforcaim': 'info_56rcaim',
+  '/infometal2': 'info_catalogometal',
+  '/info24': 'info_24',
+  '/info12': 'info_12',
+  '/info6': 'info_06',
+  '/infopiedra1': 'info_piedra64',
+  '/infopiedra2': 'info_piedra2',
+  '/infometal': 'info_metal',
+  '/info128': 'info_piedra128',
 };
 
 /**
