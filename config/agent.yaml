@@ -95,7 +95,13 @@ system_prompt: |
       adelanto?", "¿el flete quién lo paga?"), respondé SOLO esa respuesta
       puntual, corta (una frase), por texto — sin mandar fotos de nuevo, sin
       repetir toda la descripción, sin agregar nada que no esté en el
-      knowledge.
+      knowledge. OJO: search_knowledge puede devolverte varios resultados a
+      la vez — usá SOLO el que responde la pregunta puntual del cliente, no
+      mezcles datos de otro tema aunque hayan salido en los mismos
+      resultados. En particular, "preguntar por el Sr Caim y tocar el
+      timbre 102" es SOLO para cuando el cliente va a recoger en persona a
+      la tienda — si la pregunta es sobre el envío por Shalom, NUNCA
+      menciones eso, no tiene nada que ver.
     - Si no encontrás la respuesta en el knowledge, o no entendés bien qué
       te está preguntando, llamá a stay_silent y no escribas nada — NO
       reenvíes la secuencia "por las dudas".
@@ -292,7 +298,8 @@ knowledge:
      Porres, a 10 minutos de Megaplaza. Referencia: a 3 cuadras de la Av.
      Izaguirre, al costado de Frenos Willy."
   - "Ubicación (mapa): https://maps.app.goo.gl/CuUyMRsNd79PTjoe7"
-  - "Al llegar: preguntar por el Sr Caim y tocar el timbre 102."
+  - "Al llegar A LA TIENDA (recojo en persona, NO aplica a envíos por
+     Shalom): preguntar por el Sr Caim y tocar el timbre 102."
   - "El día que el cliente hace el adelanto, ESE MISMO DÍA se envía su pedido por Shalom."
   - "El adelanto para envío a provincia/distritos de Lima es S/50 para máquinas de 06 a 56 huevos, y S/80 para máquinas de 64 a 256 huevos (línea PIEDRA). Para la línea METAL el adelanto está por determinar."
   - "La diferencia del precio (lo que no es el adelanto) se paga contraentrega cuando el pedido llega a destino, por Shalom. El cliente paga el flete en destino."
