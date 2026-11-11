@@ -1395,15 +1395,9 @@ products:
 
   - key: "ubicacion"
     media:
-      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-1.jpeg"
-        type: "image"
-      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-2.jpeg"
-        type: "image"
-      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-3.jpeg"
+      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-fachada-2.jpeg"
         type: "image"
       - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-mapa-ruta.jpeg"
-        type: "image"
-      - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-fachada-2.jpeg"
         type: "image"
       - url: "https://caim.13.140.35.117.sslip.io/media/ubicacion-horario.jpeg"
         type: "image"
