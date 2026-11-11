@@ -193,31 +193,30 @@ function ycloudSignatureValid(raw: Buffer, header: unknown, secret: string): boo
 }
 
 /**
- * YCloud manda el mensaje en `whatsappInboundMessage`. Solo procesamos texto
- * por ahora (ver notas de diseño del README sobre audio/imágenes).
+ * YCloud manda el mensaje en `whatsappInboundMessage`. El bot no puede VER
+ * fotos/videos/documentos, pero cuando el cliente reenvía uno CON TEXTO
+ * (ej. reenvía la foto de un modelo con el nombre y precio escritos abajo),
+ * ese texto es información real que antes se perdía del todo: un mensaje
+ * que no era `type: "text"` se descartaba entero, caption incluido. Ahora
+ * ese caption se pasa como texto, aclarando explícitamente que es la
+ * descripción de algo que el bot no puede ver — así no inventa que "vio"
+ * la foto, pero sí puede usar el dato (ej. el nombre del modelo).
  *
  * Si la cuenta de YCloud tiene más de un número de WhatsApp dado de alta
  * (varios negocios en la misma cuenta), TODOS mandan sus eventos al mismo
  * webhook. Por eso filtramos por `to` === nuestro YCLOUD_FROM_NUMBER: así
  * este bot ignora los mensajes de clientes de otro negocio/número.
  */
-function parseInbound(payload: unknown): NormalizedMessage | null {
+export function parseInbound(payload: unknown): NormalizedMessage | null {
   const p = payload as {
     type?: string;
-    whatsappInboundMessage?: {
-      id?: string;
-      from?: string;
-      to?: string;
-      type?: string;
-      text?: { body?: string };
-      customerProfile?: { name?: string };
-    };
+    whatsappInboundMessage?: InboundMessage;
   };
   const m = p?.whatsappInboundMessage;
   if (!m?.from) return null;
   if (m.to && m.to !== ycloudEnv.YCLOUD_FROM_NUMBER) return null;
 
-  const text = m.type === 'text' ? (m.text?.body ?? '').trim() : '';
+  const text = extractInboundText(m);
   if (!text) return null;
 
   return {
@@ -228,6 +227,39 @@ function parseInbound(payload: unknown): NormalizedMessage | null {
     name: m.customerProfile?.name ?? null,
     isInbound: true,
   };
+}
+
+interface InboundMessage {
+  id?: string;
+  from?: string;
+  to?: string;
+  type?: string;
+  text?: { body?: string };
+  image?: { caption?: string };
+  video?: { caption?: string };
+  document?: { caption?: string };
+  customerProfile?: { name?: string };
+}
+
+const ETIQUETA_POR_TIPO: Record<string, string> = {
+  image: 'una foto',
+  video: 'un video',
+  document: 'un archivo',
+};
+
+function extractInboundText(m: InboundMessage): string {
+  if (m.type === 'text') return (m.text?.body ?? '').trim();
+
+  const etiqueta = m.type ? ETIQUETA_POR_TIPO[m.type] : undefined;
+  if (!etiqueta) return ''; // audio, sticker, ubicación, etc.: sin texto útil, se ignora.
+
+  const caption = (m.type === 'image' ? m.image?.caption : m.type === 'video' ? m.video?.caption : m.document?.caption)
+    ?.trim();
+
+  if (caption) {
+    return `[El cliente mandó ${etiqueta} que VOS NO PODÉS VER, con este texto escrito junto a ella: "${caption}". Nunca digas que "viste" la foto/video — solo tenés ese texto, usalo para entender a qué modelo se refiere.]`;
+  }
+  return `[El cliente mandó ${etiqueta} sin ningún texto. No podés verla. Si no tenés suficiente contexto en la conversación para saber de qué modelo se trata, preguntale directamente qué modelo o capacidad es, no asumas.]`;
 }
 
 interface AgentControlCommand {
