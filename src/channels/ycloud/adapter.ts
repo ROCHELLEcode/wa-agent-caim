@@ -51,6 +51,7 @@ const MEDIA_COMMANDS: Record<string, string> = {
   '/infopiedra2': 'info_piedra2',
   '/infometal': 'info_metal',
   '/info128': 'info_piedra128',
+  '/csb': 'pruebas_csb',
 };
 
 /**

@@ -33,6 +33,7 @@ const MANUAL_ONLY = new Set([
   'info_piedra2',
   'info_metal',
   'info_piedra128',
+  'pruebas_csb',
 ]);
 
 const productKeys = products.map((p) => p.key).filter((k) => !MANUAL_ONLY.has(k));
