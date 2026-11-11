@@ -986,6 +986,53 @@ products:
       - url: "https://caim.13.140.35.117.sslip.io/media/info-pruebas-csb-53.jpg"
         type: "image"
 
+  # "TUTORIAL 1056" -> /tuto1056 — tutorial de uso de la METAL 1056. Orden
+  # fijo 1 a 7. El ítem 7 (sensor de temperatura y humedad) no trae
+  # descripción propia en la carpeta.
+  - key: "tutorial_1056"
+    media:
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-1056-1.mp4"
+        type: "video"
+        caption: "Bandeja humedad 1056 h"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-1056-2.mp4"
+        type: "video"
+        caption: |
+          Tablero control 1056 h
+          Temperatura gallina
+          38 grados Día 1 al 18
+          37.2 del 19 al 21
+
+          Humedad:
+          60% día 1 al 18
+          65% día 19 al 21
+
+          Nota: retirar la rotación 3 días antes de los nacimientos. Y
+          esos días bajar la temperatura y subir la humedad (ver su
+          tabla).
+
+          Tutoriales en YouTube: incubadoras Caim
+          Facebook: caim Import Export
+
+          Los huevos: sacarlos diario del nido, guardarlos con la punta
+          hacia abajo, no más de 10 días de antigüedad antes de ingresar
+          a la máquina. No lavarlos, no calentarlos.
+
+          Nota: no incubar a menos de 10 grados temperatura ambiente
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-1056-3.mp4"
+        type: "video"
+        caption: "Cambio temperatura y humedad"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-1056-4.mp4"
+        type: "video"
+        caption: "Cambiar modos de incubación"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-1056-5.mp4"
+        type: "video"
+        caption: "Regresar días a 1 o actualizar"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-1056-6.mp4"
+        type: "video"
+        caption: "Foco ultravioleta"
+      - url: "https://caim.13.140.35.117.sslip.io/media/tutorial-1056-7.mp4"
+        type: "video"
+
   # Videos de envío por Shalom: se mandan con el comando manual /sh, sin
   # ninguna descripción (solo los archivos, en crudo).
   - key: "shalom_videos"
