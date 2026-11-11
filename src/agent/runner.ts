@@ -8,6 +8,7 @@ import { llm } from './llm.js';
 import { buildSystemPrompt } from './prompt.js';
 import { sanitizeReply } from './sanitize.js';
 import { defaultTools, type Tool, type ToolContext } from './tools/index.js';
+import { mostrarSeccion } from './tools/examples/mostrarSeccion.js';
 
 type ChatMessage = OpenAI.Chat.Completions.ChatCompletionMessageParam;
 type ToolCall = OpenAI.Chat.Completions.ChatCompletionMessageToolCall;
@@ -46,6 +47,31 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
     media: [],
     alreadySent: computeAlreadySent(history),
   };
+
+  // Pedido de info totalmente genérico ("info", "catálogo", "qué modelos
+  // tienen", sin ningún número ni pista de tamaño): el system_prompt ya le
+  // pide al modelo que acá llame a mostrar_seccion("pequenos") en silencio,
+  // pero en la práctica esa instrucción no siempre se sigue — alguna vez el
+  // modelo termina mandando un solo modelo (ej. el más chico) en vez del
+  // panorama completo. Para un pedido así de inequívoco no hace falta
+  // depender del criterio del modelo: se resuelve acá mismo, siempre igual.
+  if (userText && esPedidoGenericoDeInfo(userText)) {
+    const resultado = await mostrarSeccion.run({ seccion: 'pequenos' }, ctx);
+    const toolCallId = 'auto-info-generica';
+    await store.appendMessage(conversation.id, {
+      role: 'assistant',
+      content: null,
+      toolCalls: [
+        { id: toolCallId, type: 'function', function: { name: 'mostrar_seccion', arguments: '{"seccion":"pequenos"}' } },
+      ],
+    });
+    await store.appendMessage(conversation.id, {
+      role: 'tool',
+      content: JSON.stringify(resultado),
+      toolCallId,
+    });
+    return { reply: null, toolsUsed: ['mostrar_seccion'], media: ctx.media };
+  }
 
   const messages: ChatMessage[] = [
     { role: 'system', content: buildSystemPrompt({ config, contactName: contact.name }) },
@@ -127,6 +153,53 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
 
   logger.warn({ conversationId: conversation.id, toolsUsed }, 'el agente agotó las iteraciones de herramientas');
   return { reply: null, toolsUsed, media: ctx.media };
+}
+
+/**
+ * Frases de pedido de información totalmente genérico, SIN ninguna pista de
+ * tamaño/número — se comparan ya normalizadas (sin tildes, en minúscula, sin
+ * signos de puntuación). A propósito es una lista chica y de match exacto,
+ * no un regex amplio: así nunca se come por accidente un mensaje que sí
+ * tiene una pista real (ej. "info de la ovni", "precio de la de 12") — esos
+ * siguen yendo por el camino normal del modelo.
+ */
+const FRASES_INFO_GENERICA = new Set([
+  'info',
+  'informacion',
+  'info por favor',
+  'info porfa',
+  'mas informacion',
+  'quiero informacion',
+  'quisiera informacion',
+  'necesito informacion',
+  'me pasas info',
+  'me pasas la informacion',
+  'me pasa info',
+  'me pasa la informacion',
+  'catalogo',
+  'el catalogo',
+  'tienen catalogo',
+  'quiero el catalogo',
+  'quisiera el catalogo',
+  'que modelos tienen',
+  'cuales modelos tienen',
+  'que tienen disponible',
+  'que incubadoras tienen',
+  'informacion por favor',
+]);
+
+function normalizarTexto(t: string): string {
+  return t
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[¿?¡!.,]/g, '')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+export function esPedidoGenericoDeInfo(texto: string): boolean {
+  return FRASES_INFO_GENERICA.has(normalizarTexto(texto));
 }
 
 /**
