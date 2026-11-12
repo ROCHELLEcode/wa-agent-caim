@@ -156,37 +156,33 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
 }
 
 /**
- * Frases de pedido de información totalmente genérico, SIN ninguna pista de
- * tamaño/número — se comparan ya normalizadas (sin tildes, en minúscula, sin
- * signos de puntuación). A propósito es una lista chica y de match exacto,
- * no un regex amplio: así nunca se come por accidente un mensaje que sí
- * tiene una pista real (ej. "info de la ovni", "precio de la de 12") — esos
- * siguen yendo por el camino normal del modelo.
+ * Detección de pedido de información totalmente genérico ("info", "me
+ * pasan el catálogo", "qué modelos tienen", etc.), SIN ninguna pista real
+ * de tamaño o modelo puntual.
+ *
+ * A propósito NO es una lista de frases exactas: un mensaje real de cliente
+ * casi nunca es la frase pelada ("info"), siempre trae saludo, "porfa",
+ * "quisiera", etc. — una lista de frases exactas se queda corta con la
+ * variedad real y el pedido termina cayendo al criterio del LLM (que en la
+ * práctica alguna vez termina llamando buscar_modelo con un número inventado
+ * en vez de mostrar el panorama completo). Por eso se matchea por PALABRA
+ * CLAVE: alcanza con que aparezca una palabra de intención de info/catálogo,
+ * Y que no haya ningún número ni código de línea en el mensaje (eso sí es
+ * una pista puntual, ahí no hay que interceptar — que siga el camino normal
+ * con buscar_modelo).
  */
-const FRASES_INFO_GENERICA = new Set([
-  'info',
-  'informacion',
-  'info por favor',
-  'info porfa',
-  'mas informacion',
-  'quiero informacion',
-  'quisiera informacion',
-  'necesito informacion',
-  'me pasas info',
-  'me pasas la informacion',
-  'me pasa info',
-  'me pasa la informacion',
-  'catalogo',
-  'el catalogo',
-  'tienen catalogo',
-  'quiero el catalogo',
-  'quisiera el catalogo',
-  'que modelos tienen',
-  'cuales modelos tienen',
-  'que tienen disponible',
-  'que incubadoras tienen',
-  'informacion por favor',
-]);
+const LINEAS_CONOCIDAS = ['ovniplus', 'ovni', 'microplus', 'micro', 'hhd', 'rcaim', 'piedra', 'metal'];
+
+function mencionaLinea(t: string): boolean {
+  return LINEAS_CONOCIDAS.some((l) => new RegExp(`\\b${l}\\b`).test(t));
+}
+
+// "grande"/"industrial" hace que corresponda la sección PIEDRA (con texto de
+// presentación, no en silencio) — no hay que interceptarlo acá como si fuera
+// un pedido de "pequeños".
+const PISTA_GRANDE = /\b(grande|grandes|industrial(es)?)\b/;
+
+const SENAL_INFO_GENERICA = /\b(info|informacion|catalogo|modelos?|incubadoras?|maquinas?|productos?)\b/;
 
 function normalizarTexto(t: string): string {
   return t
@@ -199,7 +195,11 @@ function normalizarTexto(t: string): string {
 }
 
 export function esPedidoGenericoDeInfo(texto: string): boolean {
-  return FRASES_INFO_GENERICA.has(normalizarTexto(texto));
+  const t = normalizarTexto(texto);
+  if (/\d/.test(t)) return false;
+  if (mencionaLinea(t)) return false;
+  if (PISTA_GRANDE.test(t)) return false;
+  return SENAL_INFO_GENERICA.test(t);
 }
 
 /**
