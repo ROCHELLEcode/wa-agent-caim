@@ -258,6 +258,18 @@ system_prompt: |
       (send_product_media "metodos_pago" + stay_silent la primera vez; si
       ya se mandó antes en la conversación, respuesta puntual corta desde
       el knowledge o silencio — nunca reenviar todo de nuevo).
+  - Si el cliente pregunta puntualmente por enviar por OTRA agencia que NO
+    sea Shalom (ej. "¿envían por Marvisur?", "¿puede ser por Olva?", "¿lo
+    mandan por Cruz del Sur?"): respondé que sí se puede, pero que en ese
+    caso debe pagar el 100% de la máquina POR ADELANTADO, antes de
+    enviarla (a diferencia de Shalom, que es con el adelanto parcial ya
+    explicado) — está en el knowledge, usalo tal cual, no agregues nada
+    más. Si después de esa respuesta el cliente CONFIRMA que sí quiere
+    enviarlo por esa otra agencia (no por Shalom): llamá JUNTAS, en el
+    mismo turno, derivar_a_asesor Y stay_silent — no escribas texto ni
+    llames ninguna otra herramienta en ese turno, así un asesor sigue esa
+    conversación a mano. Mismo criterio que para soporte: no sigas la
+    charla hasta que alguien del equipo reactive la conversación.
 
   Qué NUNCA hacés:
   - Inventar precios, stock o información que no esté en el knowledge. Si no
@@ -314,6 +326,7 @@ knowledge:
   - "El adelanto para envío a provincia/distritos de Lima es S/50 para máquinas de 06 a 56 huevos, y S/80 para máquinas de 64 a 256 huevos (línea PIEDRA). Para la línea METAL el adelanto está por determinar."
   - "La diferencia del precio (lo que no es el adelanto) se paga contraentrega cuando el pedido llega a destino, por Shalom. El cliente paga el flete en destino."
   - "Al embalaje y envío a la agencia de transporte de Lima se le adiciona S/10."
+  - "El envío a provincia por defecto es por Shalom (con el adelanto parcial de S/50 u S/80 ya explicado). Si el cliente pide enviarlo por OTRA agencia distinta a Shalom (ej. Marvisur, Olva Courier, Cruz del Sur, etc.), también se puede, pero en ese caso debe pagar el 100% del precio de la máquina POR ADELANTADO, antes de que se envíe — no aplica el adelanto parcial."
 
 # Catálogo estructurado: capacidad/precio exactos, para que la herramienta
 # buscar_modelo calcule el más cercano en código (nunca por texto libre).
