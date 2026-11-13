@@ -78,6 +78,15 @@ export const ycloudAdapter: ChannelAdapter = {
         }
       }
 
+      // Estado de un mensaje que MANDAMOS nosotros (sent/delivered/failed/
+      // read). Lo único que logueamos — no accionamos nada con esto todavía
+      // — pero es la ÚNICA forma real de saber si WhatsApp efectivamente
+      // entregó un archivo: que sendDirectly responda 200 solo confirma que
+      // YCloud ACEPTÓ el pedido, no que le llegó al cliente.
+      if (logMessageStatus(request.body)) {
+        return reply.code(200).send({ ok: true });
+      }
+
       // Eco de un mensaje que EL DUEÑO escribió a mano en la app de WhatsApp
       // (coexistencia). Lo tratamos como comando de control (/nn,
       // /ss), nunca lo mandamos al agente.
@@ -119,9 +128,12 @@ export const ycloudAdapter: ChannelAdapter = {
     let lastId: string | undefined;
 
     // Primero las fotos/videos (si hay), después el texto de la respuesta.
-    // Los números de coexistencia tienen un límite de ~5 mensajes por
-    // segundo: una pausa chica entre envíos evita que WhatsApp los rechace
-    // por velocidad en tandas grandes (ej. /inku con 25 archivos). Y si UN
+    // Los números de coexistencia tienen un límite duro de 5 mensajes por
+    // segundo, y YCloud además advierte aparte de "demasiados mensajes al
+    // mismo destinatario en poco tiempo" como motivo de rechazo/retención
+    // por WhatsApp — en catálogos grandes (ej. "pequeños" con 15 fotos, o
+    // /inku con 25 archivos) una pausa chica no alcanza: la bajamos a un
+    // ritmo bastante más conservador (~1.6 msj/seg) para ese caso. Y si UN
     // archivo falla, no frenamos el resto — lo logueamos y seguimos, para
     // no dejar a medio mandar un catálogo por un solo ítem con problemas.
     const items = media ?? [];
@@ -134,10 +146,20 @@ export const ycloudAdapter: ChannelAdapter = {
           payload: { link: item.url, ...(item.caption ? { caption: item.caption } : {}) },
         });
         lastId = res.whatsappMessage?.id ?? res.id ?? lastId;
+        // OJO: "status" acá es el estado en el que YCloud ACEPTÓ el pedido
+        // (típicamente "accepted"), NO confirmación de que WhatsApp lo
+        // entregó al cliente — eso solo lo dice el webhook de status, que
+        // todavía no procesamos. Lo logueamos igual porque es la única
+        // pista que tenemos hoy si un envío "aceptado" nunca llega: antes
+        // de esto, un fallo silencioso de entrega no dejaba ningún rastro.
+        logger.info(
+          { to: externalContactId, type: item.type, url: item.url, status: res.status, metaMessageStatus: res.metaMessageStatus, id: res.id },
+          'ycloud: item de media aceptado por YCloud',
+        );
       } catch (err) {
         logger.error({ err, url: item.url, to: externalContactId }, 'ycloud: falló el envío de un archivo, sigo con el resto');
       }
-      if (i < items.length - 1) await sleep(250);
+      if (i < items.length - 1) await sleep(600);
     }
 
     if (text) {
@@ -149,25 +171,29 @@ export const ycloudAdapter: ChannelAdapter = {
   },
 };
 
+interface YCloudSendResult {
+  id?: string;
+  status?: string;
+  metaMessageStatus?: string;
+  whatsappMessage?: { id?: string };
+}
+
 async function sendYCloudMessage(input: {
   to: string;
   type: 'text' | 'image' | 'video';
   payload: Record<string, unknown>;
-}): Promise<{ id?: string; whatsappMessage?: { id?: string } }> {
-  return requestJson<{ id?: string; whatsappMessage?: { id?: string } }>(
-    'https://api.ycloud.com/v2/whatsapp/messages/sendDirectly',
-    {
-      method: 'POST',
-      headers: { 'X-API-Key': ycloudEnv.YCLOUD_API_KEY },
-      body: {
-        from: ycloudEnv.YCLOUD_FROM_NUMBER,
-        to: input.to,
-        type: input.type,
-        [input.type]: input.payload,
-      },
-      context: `ycloud.send.${input.type}`,
+}): Promise<YCloudSendResult> {
+  return requestJson<YCloudSendResult>('https://api.ycloud.com/v2/whatsapp/messages/sendDirectly', {
+    method: 'POST',
+    headers: { 'X-API-Key': ycloudEnv.YCLOUD_API_KEY },
+    body: {
+      from: ycloudEnv.YCLOUD_FROM_NUMBER,
+      to: input.to,
+      type: input.type,
+      [input.type]: input.payload,
     },
-  );
+    context: `ycloud.send.${input.type}`,
+  });
 }
 
 /**
@@ -262,6 +288,43 @@ function extractInboundText(m: InboundMessage): string {
   return `[El cliente mandó ${etiqueta} sin ningún texto. No podés verla. Si no tenés suficiente contexto en la conversación para saber de qué modelo se trata, preguntale directamente qué modelo o capacidad es, no asumas.]`;
 }
 
+/**
+ * Evento `whatsapp.message.updated`: WhatsApp (vía YCloud) avisa que un
+ * mensaje NUESTRO cambió de estado (sent/delivered/failed/read). Hay que
+ * tenerlo prendido en YCloud → Developers → Webhooks para este mismo
+ * endpoint, además de whatsapp.inbound_message.received.
+ *
+ * Devuelve true si el evento era de este tipo (así el caller corta ahí,
+ * sin seguir evaluando otros tipos de evento). Por ahora solo logueamos —
+ * "failed" con su error es la señal que hoy no tenemos de ningún otro lado.
+ */
+export function logMessageStatus(payload: unknown): boolean {
+  const p = payload as {
+    type?: string;
+    whatsappMessage?: {
+      id?: string;
+      to?: string;
+      type?: string;
+      status?: string;
+      errorCode?: string | number;
+      errorMessage?: string;
+      whatsappApiError?: { code?: string | number; message?: string };
+    };
+  };
+  if (p?.type !== 'whatsapp.message.updated') return false;
+
+  const m = p.whatsappMessage;
+  if (m?.status === 'failed') {
+    logger.error(
+      { to: m.to, messageType: m.type, id: m.id, errorCode: m.errorCode, errorMessage: m.errorMessage, whatsappApiError: m.whatsappApiError },
+      'ycloud: WhatsApp NO entregó un mensaje nuestro (status failed)',
+    );
+  } else {
+    logger.info({ to: m?.to, messageType: m?.type, id: m?.id, status: m?.status }, 'ycloud: estado de un mensaje nuestro');
+  }
+  return true;
+}
+
 interface AgentControlCommand {
   externalContactId: string;
   enable: boolean;
@@ -277,7 +340,7 @@ interface AgentControlCommand {
  * También filtra por `from` === nuestro número, por si la cuenta de YCloud
  * tiene más de un número dado de alta (ver nota en parseInbound).
  */
-function parseAgentControl(payload: unknown): AgentControlCommand | null {
+export function parseAgentControl(payload: unknown): AgentControlCommand | null {
   const p = payload as {
     type?: string;
     whatsappMessage?: { from?: string; to?: string; text?: { body?: string } };
@@ -311,7 +374,7 @@ function logUnmatchedEcho(payload: unknown): void {
   );
 }
 
-async function applyAgentControl(command: AgentControlCommand, ctx: ChannelContext): Promise<void> {
+export async function applyAgentControl(command: AgentControlCommand, ctx: ChannelContext): Promise<void> {
   const contact = await ctx.store.upsertContact({ externalId: command.externalContactId });
   const conversation = await ctx.store.getOrCreateConversation(contact.id);
   await ctx.store.setAgentEnabled(conversation.id, command.enable);
