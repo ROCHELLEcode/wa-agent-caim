@@ -10,6 +10,23 @@ const NOMBRE: Record<Seccion, string> = {
 };
 
 /**
+ * Al final del panorama de "pequeños" (pedido de info genérico), de yapa
+ * también se mandan 5 videos fijos — pedido explícito del negocio, no a
+ * criterio del modelo: 1 de la máquina de 24 huevos, 1 de la línea
+ * MICROPLUS, 1 de la 56 RCAIM y 2 de la línea PIEDRA. Los videos de
+ * MICROPLUS y PIEDRA son el mismo archivo compartido entre varias
+ * capacidades de esa línea, así que se sacan de una capacidad
+ * representativa (24 MICROPLUS y PIEDRA 64) — el contenido es el mismo sin
+ * importar de cuál capacidad se lo saque.
+ */
+const VIDEOS_FINALES: { key: string; cantidad: number; etiqueta: string }[] = [
+  { key: 'incubadora_24', cantidad: 1, etiqueta: '24 huevos' },
+  { key: 'incubadora_24_microplus', cantidad: 1, etiqueta: 'MICROPLUS' },
+  { key: 'incubadora_56_rcaim', cantidad: 1, etiqueta: '56 huevos RCAIM' },
+  { key: 'incubadora_piedra_64', cantidad: 2, etiqueta: 'PIEDRA' },
+];
+
+/**
  * Cuando el cliente da una capacidad vaga o un rango (no un número puntual),
  * manda TODOS los modelos de la sección correspondiente, una foto + precio
  * por modelo, sin otra descripción — un panorama rápido para que el cliente
@@ -26,7 +43,7 @@ export const mostrarSeccion: Tool = {
     function: {
       name: 'mostrar_seccion',
       description:
-        'Manda TODOS los modelos de una sección con foto y precio, sin descripción extra, para que el cliente vea el panorama y elija. "pequenos" = hasta 56 huevos (al final de estas fotos, de yapa, también manda un adelanto con foto y precio de PIEDRA 64 y PIEDRA 128 — no hace falta que llames aparte a send_product_media para esas dos). "piedra" = la línea PIEDRA (64 a 256), es la sección "grande" por defecto — usala para pedidos vagos tipo "algo grande" o "muchos huevos". "metal" = la línea METAL (180 a 1056, industrial) — SOLO usala si el cliente menciona "metal" explícitamente o pide algo más grande que 256 huevos; nunca la mandes solo porque pidieron "grande" en general.',
+        'Manda TODOS los modelos de una sección con foto y precio, sin descripción extra, para que el cliente vea el panorama y elija. "pequenos" = hasta 56 huevos (al final de estas fotos, de yapa, también manda un adelanto con foto y precio de PIEDRA 64 y PIEDRA 128, y 5 videos fijos — 1 de 24 huevos, 1 de MICROPLUS, 1 de 56 RCAIM y 2 de PIEDRA — no hace falta que llames aparte a send_product_media para nada de esto). "piedra" = la línea PIEDRA (64 a 256), es la sección "grande" por defecto — usala para pedidos vagos tipo "algo grande" o "muchos huevos". "metal" = la línea METAL (180 a 1056, industrial) — SOLO usala si el cliente menciona "metal" explícitamente o pide algo más grande que 256 huevos; nunca la mandes solo porque pidieron "grande" en general.',
       parameters: {
         type: 'object',
         properties: {
@@ -101,11 +118,29 @@ export const mostrarSeccion: Tool = {
       }
     }
 
+    const videosEnviados: string[] = [];
+    if (seccionPedida === 'pequenos') {
+      for (const { key, cantidad, etiqueta } of VIDEOS_FINALES) {
+        const product = products.find((p) => p.key === key);
+        const videos = (product?.media ?? [])
+          .filter((m) => m.type === 'video' && !urlsUsadas.has(m.url))
+          .slice(0, cantidad);
+
+        for (const video of videos) {
+          urlsUsadas.add(video.url);
+          ctx.media.push({ url: video.url, type: 'video', caption: `Video: ${etiqueta}` });
+          fotosEnviadas++;
+          videosEnviados.push(etiqueta);
+        }
+      }
+    }
+
     return {
       ok: true,
       seccion: NOMBRE[seccionPedida],
       modelos: modelos.map((m) => ({ linea: m.linea, capacidad: m.capacidad, precio: m.precio, agotado: m.agotado })),
       preview_modelos_grandes: previewGrandes,
+      videos_enviados: videosEnviados,
       fotos_enviadas: fotosEnviadas,
     };
   },

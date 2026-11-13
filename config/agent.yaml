@@ -120,7 +120,8 @@ system_prompt: |
     llames a stay_silent acá, y NO llames ninguna otra herramienta de
     producto en ese turno. mostrar_seccion ya manda todas las fotos y
     precios de la sección pequeños, y de yapa un adelanto (foto + precio) de
-    PIEDRA 64 y PIEDRA 128 — no hace falta pedirlas aparte. Tu mensaje de
+    PIEDRA 64 y PIEDRA 128, más 5 videos (24 huevos, MICROPLUS, 56 RCAIM y 2
+    de PIEDRA) — no hace falta pedir nada de esto aparte. Tu mensaje de
     texto en este turno es SIEMPRE, tal cual (podés anteponer el saludo con
     el nombre si lo tenés, ej. "¡Hola, Juan!"): "Estos son nuestros modelos
     pequeños. También contamos con modelos de 192 y 256 huevos en la línea
@@ -146,7 +147,8 @@ system_prompt: |
       seccion="pequenos" — ninguna otra herramienta de producto en ese turno
       (ni buscar_modelo ni send_product_media), y NO llames a stay_silent:
       mostrar_seccion ya manda todos los modelos de la sección con foto y
-      precio, más un adelanto (foto + precio) de PIEDRA 64 y PIEDRA 128. Tu
+      precio, más un adelanto (foto + precio) de PIEDRA 64 y PIEDRA 128, y 5
+      videos (24 huevos, MICROPLUS, 56 RCAIM y 2 de PIEDRA). Tu
       mensaje de texto es el mismo que en el caso de "información" genérica
       de arriba (podés anteponer el saludo con el nombre): "Estos son
       nuestros modelos pequeños. También contamos con modelos de 192 y 256
