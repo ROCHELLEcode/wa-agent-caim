@@ -26,7 +26,7 @@ export const mostrarSeccion: Tool = {
     function: {
       name: 'mostrar_seccion',
       description:
-        'Manda TODOS los modelos de una sección con foto y precio, sin descripción extra, para que el cliente vea el panorama y elija. "pequenos" = hasta 56 huevos. "piedra" = la línea PIEDRA (64 a 256), es la sección "grande" por defecto — usala para pedidos vagos tipo "algo grande" o "muchos huevos". "metal" = la línea METAL (180 a 1056, industrial) — SOLO usala si el cliente menciona "metal" explícitamente o pide algo más grande que 256 huevos; nunca la mandes solo porque pidieron "grande" en general.',
+        'Manda TODOS los modelos de una sección con foto y precio, sin descripción extra, para que el cliente vea el panorama y elija. "pequenos" = hasta 56 huevos (al final de estas fotos, de yapa, también manda un adelanto con foto y precio de PIEDRA 64 y PIEDRA 128 — no hace falta que llames aparte a send_product_media para esas dos). "piedra" = la línea PIEDRA (64 a 256), es la sección "grande" por defecto — usala para pedidos vagos tipo "algo grande" o "muchos huevos". "metal" = la línea METAL (180 a 1056, industrial) — SOLO usala si el cliente menciona "metal" explícitamente o pide algo más grande que 256 huevos; nunca la mandes solo porque pidieron "grande" en general.',
       parameters: {
         type: 'object',
         properties: {
@@ -70,10 +70,42 @@ export const mostrarSeccion: Tool = {
       fotosEnviadas++;
     }
 
+    // La sección "pequeños" es la que se manda ante un pedido de info
+    // totalmente genérico — ahí aprovechamos para dar también un adelanto de
+    // las dos líneas PIEDRA más chicas (64 y 128), para que el cliente sepa
+    // que hay opciones más grandes sin tener que preguntar. Es SOLO un
+    // adelanto (una foto + precio cada una), no el panorama PIEDRA completo.
+    // Usamos la ÚLTIMA imagen de cada producto (la foto propia de esa
+    // capacidad), no la primera: la primera es "piedra-general.jpeg", una
+    // foto compartida entre las 4 capacidades PIEDRA con una descripción
+    // larga pegada — no sirve para un adelanto corto con precio.
+    const previewGrandes: { linea: string; capacidad: number; precio: number }[] = [];
+    if (seccionPedida === 'pequenos') {
+      for (const key of ['incubadora_piedra_64', 'incubadora_piedra_128']) {
+        const modelo = catalogo.find((m) => m.key === key);
+        const product = products.find((p) => p.key === key);
+        if (!modelo || !product) continue;
+
+        const fotosDelProducto = product.media.filter((m) => m.type === 'image');
+        const foto = fotosDelProducto[fotosDelProducto.length - 1];
+        if (!foto || urlsUsadas.has(foto.url)) continue;
+
+        urlsUsadas.add(foto.url);
+        ctx.media.push({
+          url: foto.url,
+          type: 'image',
+          caption: `${nombreModelo(modelo)} - S/${modelo.precio}${modelo.agotado ? ' (AGOTADO)' : ''}`,
+        });
+        fotosEnviadas++;
+        previewGrandes.push({ linea: modelo.linea, capacidad: modelo.capacidad, precio: modelo.precio });
+      }
+    }
+
     return {
       ok: true,
       seccion: NOMBRE[seccionPedida],
       modelos: modelos.map((m) => ({ linea: m.linea, capacidad: m.capacidad, precio: m.precio, agotado: m.agotado })),
+      preview_modelos_grandes: previewGrandes,
       fotos_enviadas: fotosEnviadas,
     };
   },

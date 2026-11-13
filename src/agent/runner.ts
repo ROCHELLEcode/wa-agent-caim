@@ -50,11 +50,13 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
 
   // Pedido de info totalmente genérico ("info", "catálogo", "qué modelos
   // tienen", sin ningún número ni pista de tamaño): el system_prompt ya le
-  // pide al modelo que acá llame a mostrar_seccion("pequenos") en silencio,
-  // pero en la práctica esa instrucción no siempre se sigue — alguna vez el
-  // modelo termina mandando un solo modelo (ej. el más chico) en vez del
-  // panorama completo. Para un pedido así de inequívoco no hace falta
-  // depender del criterio del modelo: se resuelve acá mismo, siempre igual.
+  // pide al modelo que acá llame a mostrar_seccion("pequenos") y responda
+  // con un texto fijo, pero en la práctica esa instrucción no siempre se
+  // sigue — alguna vez el modelo termina mandando un solo modelo (ej. el más
+  // chico) en vez del panorama completo. Para un pedido así de inequívoco no
+  // hace falta depender del criterio del modelo: se resuelve acá mismo,
+  // siempre igual (mismo texto y fotos que se le pide al modelo en el
+  // system_prompt, para los casos que esto no llegue a interceptar).
   if (userText && esPedidoGenericoDeInfo(userText)) {
     const resultado = await mostrarSeccion.run({ seccion: 'pequenos' }, ctx);
     const toolCallId = 'auto-info-generica';
@@ -70,7 +72,15 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
       content: JSON.stringify(resultado),
       toolCallId,
     });
-    return { reply: null, toolsUsed: ['mostrar_seccion'], media: ctx.media };
+
+    const saludo = contact.name ? `¡Hola, ${contact.name}!` : '¡Hola!';
+    const reply = sanitizeReply(
+      `${saludo} Estos son nuestros modelos básicos. También contamos con modelos de 192 y 256 huevos ` +
+        'en la línea PIEDRA, y de hasta 1056 huevos en los modelos METAL semi industriales. Dígame en cuál ' +
+        'está interesado para darle más información.',
+    );
+    await store.appendMessage(conversation.id, { role: 'assistant', content: reply, toolCalls: null });
+    return { reply, toolsUsed: ['mostrar_seccion'], media: ctx.media };
   }
 
   const messages: ChatMessage[] = [
@@ -114,22 +124,11 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
     }
 
     let staySilentCalled = false;
-    let mostrarSeccionPequenos = false;
-    let mostrarSeccionNoPequenos = false;
     for (const call of toolCalls) {
       if (call.type !== 'function') continue;
       const name = call.function.name;
       toolsUsed.push(name);
       if (name === 'stay_silent') staySilentCalled = true;
-      if (name === 'mostrar_seccion') {
-        try {
-          const a = JSON.parse(call.function.arguments) as { seccion?: string };
-          if (a.seccion === 'pequenos') mostrarSeccionPequenos = true;
-          else if (a.seccion) mostrarSeccionNoPequenos = true;
-        } catch {
-          // argumentos corruptos: no es crítico acá, se maneja en runTool.
-        }
-      }
 
       const result = await runTool(toolMap, name, call.function.arguments, ctx);
       const content = JSON.stringify(result);
@@ -138,15 +137,13 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
       messages.push({ role: 'tool', tool_call_id: call.id, content });
     }
 
-    // Silencio determinístico (regla de negocio, no dejamos esto librado a
-    // que el modelo se acuerde de llamar stay_silent todas las veces):
-    // - mostrar_seccion con seccion="pequenos" SIEMPRE corta el turno sin
-    //   texto, lo haya pedido el cliente vago/chico o de forma genérica.
-    // - stay_silent (ej. mensaje ajeno) también corta el turno.
-    // - PERO mostrar_seccion con PIEDRA/METAL NUNCA es silencioso (siempre
-    //   lleva texto de presentación) — si el modelo llamó a stay_silent de
-    //   todas formas (confundiéndolo con el caso "pequeños"), lo ignoramos.
-    if ((staySilentCalled || mostrarSeccionPequenos) && !mostrarSeccionNoPequenos) {
+    // Silencio determinístico: stay_silent (ej. mensaje ajeno, soporte
+    // técnico, derivar a asesor) siempre corta el turno sin texto, no
+    // dejamos esto librado a que el modelo además recuerde no escribir nada.
+    // mostrar_seccion (sea "pequenos", "piedra" o "metal") YA NO es
+    // silencioso en ningún caso: siempre lleva un mensaje de texto de
+    // presentación/cierre.
+    if (staySilentCalled) {
       return { reply: null, toolsUsed, media: ctx.media };
     }
   }
