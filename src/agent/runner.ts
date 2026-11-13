@@ -75,7 +75,7 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
 
     const saludo = contact.name ? `¡Hola, ${contact.name}!` : '¡Hola!';
     const reply = sanitizeReply(
-      `${saludo} Estos son nuestros modelos básicos. También contamos con modelos de 192 y 256 huevos ` +
+      `${saludo} Estos son nuestros modelos pequeños. También contamos con modelos de 192 y 256 huevos ` +
         'en la línea PIEDRA, y desde 120 huevos hasta 1056 huevos en los modelos de metal semi industriales. ' +
         'Dígame en cuál está interesado para darle más información.',
     );
