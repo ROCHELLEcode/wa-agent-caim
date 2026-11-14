@@ -294,7 +294,14 @@ function extractInboundText(m: InboundMessage): string {
   if (caption) {
     return `[El cliente mandó ${etiqueta} que VOS NO PODÉS VER, con este texto escrito junto a ella: "${caption}". Nunca digas que "viste" la foto/video — solo tenés ese texto, usalo para entender a qué modelo se refiere.]`;
   }
-  return `[El cliente mandó ${etiqueta} sin ningún texto. No podés verla. Si no tenés suficiente contexto en la conversación para saber de qué modelo se trata, preguntale directamente qué modelo o capacidad es, no asumas.]`;
+  // Sin caption no hay ningún contexto real (ej. cliente reenvía una foto de
+  // una dirección, una captura, un sticker con foto) — bug reportado: este
+  // placeholder antes decía "...saber qué MODELO se trata", y esa palabra
+  // ("modelo") disparaba por accidente el detector de pedido genérico de
+  // info (esPedidoGenericoDeInfo en runner.ts), mandando el catálogo entero
+  // como respuesta a una foto cualquiera. Ahora directamente no se encola
+  // nada: mejor silencio total que adivinar o preguntar algo random.
+  return '';
 }
 
 /**

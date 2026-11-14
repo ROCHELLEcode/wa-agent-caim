@@ -73,6 +73,14 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
       toolCallId,
     });
 
+    // El catálogo de "pequeños" ya se mandó antes en esta conversación
+    // (mostrarSeccion devuelve forzar_silencio) — no lo repetimos. Bug
+    // reportado: un mensaje nuevo sin relación (ej. "¿y para ganso?") volvía
+    // a disparar esta rama y reenviaba los ~20 archivos de nuevo.
+    if ((resultado as { forzar_silencio?: boolean })?.forzar_silencio) {
+      return { reply: null, toolsUsed: ['mostrar_seccion'], media: ctx.media };
+    }
+
     const saludo = contact.name ? `¡Hola, ${contact.name}!` : '¡Hola!';
     const reply = sanitizeReply(
       `${saludo} Estos son nuestros modelos pequeños. También contamos con modelos de 192 y 256 huevos ` +
@@ -133,6 +141,13 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
       const result = await runTool(toolMap, name, call.function.arguments, ctx);
       const content = JSON.stringify(result);
 
+      // mostrar_seccion se niega (forzar_silencio) si esa sección ya se
+      // mandó antes en esta conversación — mismo criterio que stay_silent:
+      // mejor silencio total que reenviar un catálogo entero (ej. el
+      // cliente preguntó algo sin relación y el modelo quiso "reforzar"
+      // mostrando el catálogo de nuevo).
+      if ((result as { forzar_silencio?: boolean })?.forzar_silencio) staySilentCalled = true;
+
       await store.appendMessage(conversation.id, { role: 'tool', content, toolCallId: call.id });
       messages.push({ role: 'tool', tool_call_id: call.id, content });
     }
@@ -140,9 +155,10 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
     // Silencio determinístico: stay_silent (ej. mensaje ajeno, soporte
     // técnico, derivar a asesor) siempre corta el turno sin texto, no
     // dejamos esto librado a que el modelo además recuerde no escribir nada.
-    // mostrar_seccion (sea "pequenos", "piedra" o "metal") YA NO es
-    // silencioso en ningún caso: siempre lleva un mensaje de texto de
-    // presentación/cierre.
+    // mostrar_seccion (sea "pequenos", "piedra" o "metal") lleva un mensaje
+    // de texto de presentación/cierre la PRIMERA vez — pero si esa sección
+    // ya se había mandado antes en la conversación (forzar_silencio), corta
+    // sin texto igual que stay_silent: no hay nada nuevo que presentar.
     if (staySilentCalled) {
       return { reply: null, toolsUsed, media: ctx.media };
     }
@@ -207,20 +223,31 @@ export function esPedidoGenericoDeInfo(texto: string): boolean {
 }
 
 /**
- * Mira el historial guardado y junta las keys que send_product_media ya
- * mandó en esta conversación (no solo en este turno). Así una herramienta
- * puede negarse a reenviar una secuencia larga (ej. metodos_pago) que el
- * cliente ya recibió hace un par de mensajes.
+ * Mira el historial guardado y junta las keys que send_product_media y
+ * mostrar_seccion ya mandaron en esta conversación (no solo en este turno).
+ * Así una herramienta puede negarse a reenviar una secuencia larga (ej.
+ * metodos_pago, o el panorama completo de "pequeños") que el cliente ya
+ * recibió hace un par de mensajes — ej. si pregunta algo nuevo ("¿y para
+ * ganso?") y eso hace que se vuelva a llamar a mostrar_seccion, no hay que
+ * mandar los mismos 20 archivos de nuevo.
+ *
+ * Las secciones se guardan con el prefijo "seccion:" para no confundirse con
+ * una product_key real de send_product_media.
  */
 function computeAlreadySent(history: HistoryMessage[]): Set<string> {
   const keys = new Set<string>();
   for (const m of history) {
     if (m.role !== 'assistant' || !m.toolCalls) continue;
     for (const call of m.toolCalls as ToolCall[]) {
-      if (call.type !== 'function' || call.function.name !== 'send_product_media') continue;
+      if (call.type !== 'function') continue;
       try {
-        const args = JSON.parse(call.function.arguments) as { product_key?: string };
-        if (args.product_key) keys.add(args.product_key);
+        if (call.function.name === 'send_product_media') {
+          const args = JSON.parse(call.function.arguments) as { product_key?: string };
+          if (args.product_key) keys.add(args.product_key);
+        } else if (call.function.name === 'mostrar_seccion') {
+          const args = JSON.parse(call.function.arguments) as { seccion?: string };
+          if (args.seccion) keys.add(`seccion:${args.seccion}`);
+        }
       } catch {
         // argumentos corruptos/viejos: los ignoramos, no es crítico.
       }

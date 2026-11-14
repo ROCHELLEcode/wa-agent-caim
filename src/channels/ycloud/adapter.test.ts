@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { applyAgentControl, logMessageStatus, parseAgentControl } from './adapter.js';
+import { applyAgentControl, logMessageStatus, parseAgentControl, parseInbound } from './adapter.js';
 import { MemoryStore } from '../../memory/memory.js';
 import { ycloudEnv } from './env.js';
 import type { ChannelContext } from '../types.js';
@@ -84,6 +84,37 @@ describe('applyAgentControl — efecto real sobre la conversación', () => {
     const contact = await store.upsertContact({ externalId: CLIENTE });
     const conv = await store.getOrCreateConversation(contact.id);
     assert.equal(conv.agentEnabled, true);
+  });
+});
+
+function inboundPayload(overrides: Record<string, unknown>) {
+  return {
+    type: 'whatsapp.inbound_message.received',
+    whatsappInboundMessage: { from: CLIENTE, to: FROM, ...overrides },
+  };
+}
+
+describe('parseInbound — fotos/videos/documentos sin texto útil se ignoran en silencio', () => {
+  it('caso real reportado: una foto SIN caption (ej. captura de una dirección) no genera ningún mensaje — antes el placeholder decía "...qué MODELO es", y esa palabra disparaba por accidente el envío del catálogo completo', () => {
+    const r = parseInbound(inboundPayload({ type: 'image', image: {} }));
+    assert.equal(r, null);
+  });
+
+  it('un video sin caption tampoco genera ningún mensaje', () => {
+    const r = parseInbound(inboundPayload({ type: 'video', video: {} }));
+    assert.equal(r, null);
+  });
+
+  it('una foto CON caption sigue pasando el texto (no se pierde información real)', () => {
+    const r = parseInbound(inboundPayload({ type: 'image', image: { caption: 'cuánto cuesta esta' } }));
+    assert.ok(r);
+    assert.match(r!.text, /cuánto cuesta esta/);
+  });
+
+  it('un mensaje de texto normal sigue funcionando igual', () => {
+    const r = parseInbound(inboundPayload({ type: 'text', text: { body: 'hola' } }));
+    assert.ok(r);
+    assert.equal(r!.text, 'hola');
   });
 });
 

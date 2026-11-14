@@ -64,6 +64,15 @@ export const mostrarSeccion: Tool = {
       return { error: 'seccion debe ser "pequenos", "piedra" o "metal".' };
     }
 
+    // Esta sección ya se mandó antes en esta misma conversación (ver
+    // computeAlreadySent en runner.ts) — bug reportado: un mensaje nuevo del
+    // cliente que no tiene nada que ver (ej. "¿y para ganso?") hacía que se
+    // volviera a llamar a esta herramienta y se reenviaran los ~20 archivos
+    // de nuevo. Mejor silencio total que duplicar un catálogo entero.
+    if (ctx.alreadySent.has(`seccion:${seccionPedida}`)) {
+      return { ok: false, ya_enviado_antes: true, forzar_silencio: true };
+    }
+
     const { catalogo, products } = loadConfig();
     const modelos = catalogo.filter((m) => clasificar(m) === seccionPedida).sort((a, b) => a.capacidad - b.capacidad);
 
