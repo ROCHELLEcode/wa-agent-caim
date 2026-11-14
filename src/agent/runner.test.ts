@@ -26,6 +26,20 @@ describe('esPedidoGenericoDeInfo', () => {
     }
   });
 
+  it('matchea pedidos genéricos de precio/cotización SIN mencionar modelo ni capacidad (antes caían al criterio del LLM)', () => {
+    for (const t of [
+      'hola, cuánto cuesta',
+      'qué precios tienen',
+      'cuánto sale',
+      'cuánto vale',
+      'me pueden dar una cotización',
+      'quisiera cotizar por favor',
+      'buenas, cuál es el costo',
+    ]) {
+      assert.equal(esPedidoGenericoDeInfo(t), true, `debería matchear: "${t}"`);
+    }
+  });
+
   it('NO matchea mensajes con cualquier pista real de modelo/capacidad/precio', () => {
     for (const t of [
       'info de la ovni',

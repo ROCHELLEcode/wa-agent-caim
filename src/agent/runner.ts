@@ -179,7 +179,14 @@ function mencionaLinea(t: string): boolean {
 // un pedido de "pequeños".
 const PISTA_GRANDE = /\b(grande|grandes|industrial(es)?)\b/;
 
-const SENAL_INFO_GENERICA = /\b(info|informacion|catalogo|modelos?|incubadoras?|maquinas?|productos?)\b/;
+// Además de "info/catálogo/modelos", un pedido genérico muy común en la
+// práctica es preguntar directamente por precio/cotización SIN mencionar
+// ningún modelo puntual ("cuánto cuesta", "qué precios tienen", "cotización",
+// "cuánto sale") — antes esto no matcheaba nada, caía al criterio del LLM, y
+// el LLM alguna vez terminaba respondiendo con un solo modelo "adivinado" en
+// vez del panorama completo (el bug reportado de "solo manda una foto").
+const SENAL_INFO_GENERICA =
+  /\b(info|informacion|catalogo|modelos?|incubadoras?|maquinas?|productos?|precios?|cotizacion(es)?|cotizar|cuesta[n]?|cuanto|vale[n]?|costo[s]?)\b/;
 
 function normalizarTexto(t: string): string {
   return t

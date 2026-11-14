@@ -59,6 +59,29 @@ export async function bufferHasMessages(conversationId: string): Promise<boolean
   return (await redis.llen(bufKey(conversationId))) > 0;
 }
 
+/**
+ * Devuelve al buffer los textos que ya se habían sacado con drainBuffer,
+ * para cuando el turno falla DESPUÉS de drenarlos (ej. el LLM tira timeout,
+ * o se cae la red a mitad de camino). Sin esto, un fallo transitorio
+ * (algo tan común como un hiccup de la API del LLM) perdía el mensaje del
+ * cliente para siempre: BullMQ reintenta el trabajo, pero drainBuffer ya
+ * había vaciado todo, así que el reintento no encontraba nada que procesar
+ * y "terminaba bien" sin haber mandado nunca ninguna respuesta — el cliente
+ * quedaba sin ninguna respuesta y sin ningún rastro de error.
+ *
+ * Los vuelve a poner AL FRENTE del buffer (por si llegó algo nuevo del
+ * cliente mientras tanto), preservando el orden original.
+ */
+export async function restoreBuffer(conversationId: string, texts: string[]): Promise<void> {
+  if (texts.length === 0) return;
+  const multi = redis.multi();
+  for (let i = texts.length - 1; i >= 0; i--) {
+    multi.lpush(bufKey(conversationId), texts[i]!);
+  }
+  multi.expire(bufKey(conversationId), TTL);
+  await multi.exec();
+}
+
 /** Lock por conversación: dos turnos a la vez cruzarían respuestas. */
 export async function takeLock(conversationId: string): Promise<string | null> {
   const token = randomUUID();

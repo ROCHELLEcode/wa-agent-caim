@@ -163,8 +163,17 @@ export const ycloudAdapter: ChannelAdapter = {
     }
 
     if (text) {
-      const res = await sendYCloudMessage({ to: externalContactId, type: 'text', payload: { body: text } });
-      lastId = res.whatsappMessage?.id ?? res.id ?? lastId;
+      try {
+        const res = await sendYCloudMessage({ to: externalContactId, type: 'text', payload: { body: text } });
+        lastId = res.whatsappMessage?.id ?? res.id ?? lastId;
+      } catch (err) {
+        // Mismo criterio que los items de media: si YA mandamos fotos/videos
+        // y el texto de cierre falla, NO relanzamos el error — eso haría que
+        // el worker reintente el turno entero desde cero (runAgent de nuevo),
+        // duplicando todo el catálogo que ya llegó. Preferimos perder solo el
+        // texto de cierre (queda logueado) a reenviar 20 fotos de nuevo.
+        logger.error({ err, to: externalContactId }, 'ycloud: falló el envío del texto de cierre');
+      }
     }
 
     return { messageId: lastId };

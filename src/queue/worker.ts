@@ -7,7 +7,7 @@ import type { AgentConfig } from '../config.js';
 import type { ConversationStore } from '../memory/store.js';
 import type { ChannelAdapter } from '../channels/types.js';
 import { MESSAGE_QUEUE, type MessageJob } from './queues.js';
-import { bufferHasMessages, drainBuffer, releaseLock, reschedule, takeLock } from './buffer.js';
+import { bufferHasMessages, drainBuffer, releaseLock, reschedule, restoreBuffer, takeLock } from './buffer.js';
 
 const CONCURRENCY = 5;
 
@@ -36,26 +36,35 @@ async function processTurn(
     const texts = await drainBuffer(conversationId);
     if (texts.length === 0) return;
 
-    const contact = await store.getContact(contactId);
-    if (!contact) return;
+    try {
+      const contact = await store.getContact(contactId);
+      if (!contact) return;
 
-    logger.info({ conversationId, messages: texts.length }, 'procesando turno');
+      logger.info({ conversationId, messages: texts.length }, 'procesando turno');
 
-    const { reply, media } = await runAgent({ store, conversation, contact, userText: texts.join('\n'), config });
-    await store.touchLastMessage(conversationId);
+      const { reply, media } = await runAgent({ store, conversation, contact, userText: texts.join('\n'), config });
+      await store.touchLastMessage(conversationId);
 
-    if (!reply && media.length === 0) return;
-    if (!env.AGENT_REPLY_ENABLED) {
-      logger.info({ conversationId, reply }, 'AGENT_REPLY_ENABLED=false: respuesta no enviada');
-      return;
+      if (!reply && media.length === 0) return;
+      if (!env.AGENT_REPLY_ENABLED) {
+        logger.info({ conversationId, reply }, 'AGENT_REPLY_ENABLED=false: respuesta no enviada');
+        return;
+      }
+
+      await adapter.sendOutbound({
+        externalContactId: contact.externalId,
+        text: reply ?? '',
+        externalConversationId: conversation.externalId,
+        media,
+      });
+    } catch (err) {
+      // El buffer YA está vacío (drainBuffer arriba) — sin esto, un fallo
+      // transitorio (timeout del LLM, YCloud caído un segundo) significaba
+      // perder el mensaje del cliente para siempre: el reintento de BullMQ
+      // encontraba el buffer vacío y "terminaba bien" sin responder nada.
+      await restoreBuffer(conversationId, texts);
+      throw err;
     }
-
-    await adapter.sendOutbound({
-      externalContactId: contact.externalId,
-      text: reply ?? '',
-      externalConversationId: conversation.externalId,
-      media,
-    });
   } finally {
     await releaseLock(conversationId, token);
   }
