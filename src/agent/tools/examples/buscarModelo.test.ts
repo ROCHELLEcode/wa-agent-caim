@@ -101,4 +101,14 @@ describe('buscarModelo — la línea/código tiene prioridad sobre la capacidad'
     const r = (await buscarModelo.run({}, ctx())) as { error?: string };
     assert.ok(r.error);
   });
+
+  it('bug reportado: si el modelo ya está en ctx.alreadySent (ya se mandó antes en la conversación), da el precio/nombre igual pero NO reenvía sus fotos/videos', async () => {
+    const c = ctx();
+    c.alreadySent.add('incubadora_piedra_128');
+    const r = (await buscarModelo.run({ capacidad_huevos: 120 }, c)) as Resultado & { fotos_videos_enviados: number };
+    assert.equal(r.opciones.length, 1);
+    assert.equal(r.opciones[0]!.key, 'incubadora_piedra_128');
+    assert.equal(r.fotos_videos_enviados, 0);
+    assert.equal(c.media.length, 0);
+  });
 });

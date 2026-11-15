@@ -161,6 +161,13 @@ export const buscarModelo: Tool = {
     const yaEnColados = new Set(ctx.media.map((m) => m.url));
     let fotosEnviadas = 0;
     for (const modelo of opciones) {
+      // Bug reportado: un mensaje de seguimiento ("nada menos?") que solo
+      // necesitaba texto volvía a mandar las fotos/videos de un modelo que
+      // YA se habían mandado antes en la conversación — ctx.alreadySent
+      // (ver computeAlreadySent en runner.ts) junta las keys de los
+      // "opciones" de buscar_modelo ya devueltos antes, no solo de este
+      // turno, así que acá nos salteamos ese modelo por completo.
+      if (ctx.alreadySent.has(modelo.key)) continue;
       const product = products.find((p) => p.key === modelo.key);
       const nuevos = (product?.media ?? []).filter((m) => !yaEnColados.has(m.url));
       for (const n of nuevos) yaEnColados.add(n.url);

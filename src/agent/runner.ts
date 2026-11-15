@@ -253,6 +253,26 @@ function computeAlreadySent(history: HistoryMessage[]): Set<string> {
       }
     }
   }
+  // buscar_modelo es distinto: sus ARGUMENTOS (capacidad/código pedidos) no
+  // dicen qué modelo(s) terminó mandando — eso solo está en su RESULTADO
+  // ("opciones"), guardado en history como un mensaje role:'tool' aparte.
+  // Bug reportado: un "nada menos?" de seguimiento volvía a llamar a
+  // buscar_modelo para el mismo modelo y reenviaba sus fotos/videos de
+  // nuevo. Por eso acá escaneamos los resultados de herramienta ya
+  // guardados (no hace falta cruzar con el tool_call_id del pedido: solo
+  // buscar_modelo devuelve un array "opciones" con objetos que tienen "key").
+  for (const m of history) {
+    if (m.role !== 'tool' || !m.content) continue;
+    try {
+      const resultado = JSON.parse(m.content) as { opciones?: Array<{ key?: string }> };
+      if (!Array.isArray(resultado.opciones)) continue;
+      for (const opcion of resultado.opciones) {
+        if (typeof opcion.key === 'string') keys.add(opcion.key);
+      }
+    } catch {
+      // resultado corrupto/viejo o no es JSON: lo ignoramos.
+    }
+  }
   return keys;
 }
 
