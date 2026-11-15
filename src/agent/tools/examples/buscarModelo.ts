@@ -51,6 +51,17 @@ function normalizarCodigo(codigo: string): string {
   return ALIAS_CODIGO[codigo] ?? codigo;
 }
 
+/**
+ * Excepción de negocio puntual (pedida explícitamente, no una regla general
+ * de "redondear siempre para arriba"): sin línea, "20 huevos" no debe
+ * ofrecer la de 18 (le quedaría chica al cliente) aunque esté más cerca en
+ * número — tiene que ofrecer la de 24. Para cualquier otra capacidad sin
+ * match exacto se sigue usando la más cercana de siempre.
+ */
+const CAPACIDAD_SIN_LINEA_OVERRIDE: Record<number, number> = {
+  20: 24,
+};
+
 export const buscarModelo: Tool = {
   definition: {
     type: 'function',
@@ -126,13 +137,21 @@ export const buscarModelo: Tool = {
         opciones = base;
         capacidadExacta = false;
       } else {
-        // Ni línea ni capacidad exacta: la(s) opción(es) más cercana(s)
-        // disponibles (puede haber empate), sin mezclar secciones de más.
-        const ordenado = [...base].sort(
-          (a, b) => Math.abs(a.capacidad - capacidad) - Math.abs(b.capacidad - capacidad),
-        );
-        const distanciaMinima = Math.abs(ordenado[0]!.capacidad - capacidad);
-        opciones = ordenado.filter((m) => Math.abs(m.capacidad - capacidad) === distanciaMinima);
+        const capacidadOverride = CAPACIDAD_SIN_LINEA_OVERRIDE[capacidad];
+        const exactosOverride = capacidadOverride
+          ? base.filter((m) => m.capacidad === capacidadOverride)
+          : [];
+        if (exactosOverride.length > 0) {
+          opciones = exactosOverride;
+        } else {
+          // Ni línea ni capacidad exacta: la(s) opción(es) más cercana(s)
+          // disponibles (puede haber empate), sin mezclar secciones de más.
+          const ordenado = [...base].sort(
+            (a, b) => Math.abs(a.capacidad - capacidad) - Math.abs(b.capacidad - capacidad),
+          );
+          const distanciaMinima = Math.abs(ordenado[0]!.capacidad - capacidad);
+          opciones = ordenado.filter((m) => Math.abs(m.capacidad - capacidad) === distanciaMinima);
+        }
         capacidadExacta = false;
       }
     }

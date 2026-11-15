@@ -81,10 +81,19 @@ describe('buscarModelo — la línea/código tiene prioridad sobre la capacidad'
     assert.equal(r.opciones[0]!.key, 'incubadora_06');
   });
 
-  it('sin línea ni capacidad exacta disponible, da la opción más cercana (sin mezclar con otra que el cliente no pidió)', async () => {
+  it('caso puntual de negocio: "20 huevos" sin línea ofrece las de 24 (NUNCA la de 18, le quedaría chica), aunque 18 esté numéricamente más cerca', async () => {
     const r = (await buscarModelo.run({ capacidad_huevos: 20 }, ctx())) as Resultado;
+    assert.deepEqual(
+      r.opciones.map((o) => o.key).sort(),
+      ['incubadora_24', 'incubadora_24_microplus'],
+    );
+    assert.equal(r.capacidad_exacta, false);
+  });
+
+  it('sin línea ni capacidad exacta disponible (y sin override puntual), da la opción más cercana', async () => {
+    const r = (await buscarModelo.run({ capacidad_huevos: 30 }, ctx())) as Resultado;
     assert.equal(r.opciones.length, 1);
-    assert.equal(r.opciones[0]!.key, 'incubadora_ovniplus_18');
+    assert.equal(r.opciones[0]!.key, 'incubadora_26_ovni');
     assert.equal(r.capacidad_exacta, false);
   });
 
