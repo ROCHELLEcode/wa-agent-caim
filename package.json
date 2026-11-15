@@ -13,7 +13,7 @@
     "migrate": "tsx src/db/migrate.ts",
     "setup": "tsx scripts/setup.ts",
     "chat": "tsx scripts/chat.ts",
-    "demo": "cross-env CHANNEL_ADAPTER=web STORE=memory tsx watch src/index.ts",
+    "demo": "cross-env WA_DEMO=1 CHANNEL_ADAPTER=web STORE=memory tsx watch src/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test \"src/**/*.test.ts\""
   },

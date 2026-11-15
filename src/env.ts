@@ -5,7 +5,15 @@ import { z } from 'zod';
 // existan en el entorno, así que una key vieja exportada a nivel sistema le
 // ganaría en silencio a la del .env. El .env es la fuente de verdad en local.
 // En producción es inofensivo: no hay .env dentro del contenedor.
-config({ override: true });
+//
+// Excepción puntual: WA_DEMO=1 (lo pone npm run demo, ver package.json). Sin
+// esto, un .env de un proyecto real (con CHANNEL_ADAPTER=ycloud y
+// STORE=postgres, como el de producción) le ganaba en silencio al
+// CHANNEL_ADAPTER=web/STORE=memory que pasa el comando — el "demo" terminaba
+// levantando el canal y la base de datos REALES en vez del modo de prueba
+// aislado. Con WA_DEMO=1 dejamos que gane lo que puso el comando, y el .env
+// solo rellena lo que falte (ej. OPENROUTER_API_KEY).
+config({ override: process.env.WA_DEMO !== '1' });
 
 /**
  * Configuración del NÚCLEO. Cada adaptador de canal valida sus propias

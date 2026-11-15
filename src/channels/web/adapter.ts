@@ -15,8 +15,11 @@ export const webAdapter: ChannelAdapter = {
   mode: 'inline',
 
   async registerRoutes(app: FastifyInstance, ctx: ChannelContext): Promise<void> {
-    // Sirve la carpeta web/ (la UI) en la raíz.
-    await app.register(fastifyStatic, { root: path.resolve(process.cwd(), 'web'), prefix: '/' });
+    // Sirve la carpeta web/ (la UI) en la raíz. decorateReply:false porque
+    // server.ts ya registró @fastify/static antes (para /media/) y decora
+    // "reply.sendFile" una sola vez — sin esto, Fastify tira
+    // FST_ERR_DEC_ALREADY_PRESENT al arrancar el canal web.
+    await app.register(fastifyStatic, { root: path.resolve(process.cwd(), 'web'), prefix: '/', decorateReply: false });
 
     // La app web postea acá y recibe la respuesta del agente en el acto.
     app.post('/chat', async (request, reply) => {
