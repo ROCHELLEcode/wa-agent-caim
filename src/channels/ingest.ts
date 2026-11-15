@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import type { AgentConfig } from '../config.js';
 import { runAgent } from '../agent/runner.js';
 import type { ConversationStore } from '../memory/store.js';
-import type { ChannelContext, NormalizedMessage } from './types.js';
+import type { ChannelContext, InlineReply, NormalizedMessage } from './types.js';
 
 const DEDUPE_WINDOW_MS = 60_000;
 
@@ -55,17 +55,17 @@ export function makeChannelContext(
       await enqueueMessage(conversation.id, contact.id, text);
     },
 
-    async runInline(message: NormalizedMessage): Promise<string | null> {
+    async runInline(message: NormalizedMessage): Promise<InlineReply> {
       const contact = await store.upsertContact({
         externalId: message.externalContactId,
         name: message.name,
       });
       const conversation = await store.getOrCreateConversation(contact.id, message.externalConversationId ?? null);
-      if (!conversation.agentEnabled) return null;
+      if (!conversation.agentEnabled) return { reply: null, media: [] };
 
-      const { reply } = await runAgent({ store, conversation, contact, userText: message.text.trim(), config });
+      const { reply, media } = await runAgent({ store, conversation, contact, userText: message.text.trim(), config });
       await store.touchLastMessage(conversation.id);
-      return reply;
+      return { reply, media };
     },
   };
 }

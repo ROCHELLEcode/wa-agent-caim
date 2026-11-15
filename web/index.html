@@ -18,6 +18,8 @@
       .user { align-self: flex-end; background: #005c4b; }
       .bot { align-self: flex-start; background: #202c33; }
       .meta { align-self: center; opacity: .5; font-size: 12px; }
+      .bot img, .bot video { display: block; max-width: 100%; border-radius: 8px; margin-top: 6px; }
+      .bot .caption { font-size: 13px; opacity: .75; margin-top: 2px; }
       form { display: flex; gap: 8px; padding: 12px; background: #202c33; }
       input { flex: 1; padding: 11px 14px; border-radius: 22px; border: none; background: #2a3942; color: #e9edef; font-size: 15px; }
       input:focus { outline: 2px solid #005c4b; }
@@ -52,6 +54,26 @@
         return el;
       }
 
+      function addMedia(media) {
+        for (const item of media || []) {
+          const el = document.createElement('div');
+          el.className = 'msg bot';
+          const tag = item.type === 'video' ? 'video' : 'img';
+          const node = document.createElement(tag);
+          node.src = item.url;
+          if (tag === 'video') node.controls = true;
+          el.appendChild(node);
+          if (item.caption) {
+            const cap = document.createElement('div');
+            cap.className = 'caption';
+            cap.textContent = item.caption;
+            el.appendChild(cap);
+          }
+          log.appendChild(el);
+        }
+        log.scrollTop = log.scrollHeight;
+      }
+
       add('Escribí para empezar. Probá "¿qué hora es?" o "¿cuál es el horario?".', 'meta');
 
       form.addEventListener('submit', async (e) => {
@@ -69,7 +91,14 @@
             body: JSON.stringify({ sessionId, text }),
           });
           const data = await res.json();
-          typing.textContent = data.reply || '(sin respuesta)';
+          if (data.reply) {
+            typing.textContent = data.reply;
+          } else if (data.media && data.media.length) {
+            typing.remove();
+          } else {
+            typing.textContent = '(sin respuesta)';
+          }
+          addMedia(data.media);
         } catch (err) {
           typing.textContent = 'Error de red: ' + err.message;
         } finally {

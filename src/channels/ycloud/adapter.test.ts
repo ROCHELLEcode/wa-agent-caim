@@ -21,7 +21,7 @@ function ctxConFakeStore(store: MemoryStore): ChannelContext {
     store,
     config: {} as AgentConfig,
     enqueue: async () => {},
-    runInline: async () => null,
+    runInline: async () => ({ reply: null, media: [] }),
   };
 }
 

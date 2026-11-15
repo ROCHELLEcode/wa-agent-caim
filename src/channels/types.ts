@@ -29,7 +29,13 @@ export interface ChannelContext {
   store: ConversationStore;
   config: AgentConfig;
   enqueue(message: NormalizedMessage): Promise<void>;
-  runInline(message: NormalizedMessage): Promise<string | null>;
+  runInline(message: NormalizedMessage): Promise<InlineReply>;
+}
+
+/** Respuesta de un canal inline (sin cola): texto + media, como mandaría sendOutbound. */
+export interface InlineReply {
+  reply: string | null;
+  media: MediaItem[];
 }
 
 /** Una foto o video que el bot puede mandar (además del texto). */

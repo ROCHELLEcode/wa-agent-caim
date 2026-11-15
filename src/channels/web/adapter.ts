@@ -28,14 +28,14 @@ export const webAdapter: ChannelAdapter = {
       const sessionId = typeof body.sessionId === 'string' && body.sessionId ? body.sessionId : 'anon';
       if (!text) return reply.code(400).send({ error: 'texto vacío' });
 
-      const answer = await ctx.runInline({
+      const { reply: answer, media } = await ctx.runInline({
         externalContactId: `web:${sessionId}`,
         externalConversationId: `web:${sessionId}`,
         text,
         isInbound: true,
       });
 
-      return reply.send({ reply: answer ?? '' });
+      return reply.send({ reply: answer ?? '', media });
     });
 
     logger.info(`canal web listo → abrí http://localhost:${env.PORT} para chatear`);
