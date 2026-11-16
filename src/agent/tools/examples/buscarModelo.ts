@@ -83,7 +83,13 @@ export const buscarModelo: Tool = {
               'Pasalo SIEMPRE que el cliente haya mencionado, en cualquier mensaje de la conversación (incluido el texto/caption de una foto reenviada), una línea específica — tiene PRIORIDAD sobre capacidad_huevos. Códigos válidos: "HHD", "OVNI", "OVNIPLUS", "MICROPLUS", "RCAIM", "PIEDRA", "METAL". El cliente puede decir la forma corta/coloquial (ej. "micro" en vez de "MICROPLUS") — pasala igual, no hace falta que sea el nombre exacto del catálogo.',
           },
         },
-        anyOf: [{ required: ['capacidad_huevos'] }, { required: ['codigo_modelo'] }],
+        // SIN "anyOf: [{required:[...]}, ...]" a propósito — varios
+        // proveedores detrás de OpenRouter (Claude en AWS/Bedrock/Anthropic
+        // directo, Azure) devuelven 400 ante un "anyOf"/"oneOf"/"allOf" en
+        // la raíz del input_schema de una tool, tirando abajo CUALQUIER
+        // llamada al LLM que incluya esta herramienta — un bug real que
+        // causaba fallos intermitentes. La regla "al menos uno de los dos
+        // campos" ya se valida en runtime (ver el chequeo de abajo).
         additionalProperties: false,
       },
     },
