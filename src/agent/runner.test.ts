@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { esPedidoGenericoDeInfo } from './runner.js';
+import { esPedidoGenericoDeInfo, pruneOrphanToolCalls } from './runner.js';
 
 describe('esPedidoGenericoDeInfo', () => {
   it('matchea pedidos genéricos típicos, con o sin tildes/mayúsculas/signos', () => {
@@ -56,5 +56,44 @@ describe('esPedidoGenericoDeInfo', () => {
     ]) {
       assert.equal(esPedidoGenericoDeInfo(t), false, `NO debería matchear: "${t}"`);
     }
+  });
+});
+
+describe('pruneOrphanToolCalls', () => {
+  it('bug real: un tool_call sin resultado guardado (el proceso se cayó a mitad de turno) se descarta ENTERO, aunque ya no esté al final del historial', () => {
+    const historial = [
+      { role: 'user', content: 'quiero una de 24 huevos' },
+      {
+        role: 'assistant',
+        content: null,
+        tool_calls: [
+          { id: 'call_1', type: 'function', function: { name: 'buscar_modelo', arguments: '{}' } },
+          { id: 'call_2', type: 'function', function: { name: 'send_product_media', arguments: '{}' } },
+        ],
+      },
+      { role: 'tool', tool_call_id: 'call_1', content: '{}' },
+      // call_2 nunca se guardó (acá se cayó el proceso).
+      { role: 'user', content: 'hola de nuevo?' }, // turno siguiente, ya encolado
+    ] as unknown as Parameters<typeof pruneOrphanToolCalls>[0];
+
+    const limpio = pruneOrphanToolCalls(historial);
+    assert.deepEqual(
+      limpio.map((m) => m.role),
+      ['user', 'user'],
+    );
+  });
+
+  it('un historial sano (todos los tool_calls con su resultado) no se toca', () => {
+    const historial = [
+      { role: 'user', content: 'hola' },
+      {
+        role: 'assistant',
+        content: null,
+        tool_calls: [{ id: 'call_1', type: 'function', function: { name: 'stay_silent', arguments: '{}' } }],
+      },
+      { role: 'tool', tool_call_id: 'call_1', content: '{}' },
+    ] as unknown as Parameters<typeof pruneOrphanToolCalls>[0];
+
+    assert.deepEqual(pruneOrphanToolCalls(historial), historial);
   });
 });

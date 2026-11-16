@@ -295,17 +295,44 @@ function toChat(history: HistoryMessage[]): ChatMessage[] {
   return out;
 }
 
-function pruneOrphanToolCalls(messages: ChatMessage[]): ChatMessage[] {
-  const out = [...messages];
-  while (out.length > 0) {
-    const last = out[out.length - 1]!;
-    const isAssistantWithTools =
-      last.role === 'assistant' && 'tool_calls' in last && Array.isArray(last.tool_calls) && last.tool_calls.length > 0;
-    if (!isAssistantWithTools) break;
-    out.pop();
+/**
+ * Saca del historial cualquier mensaje assistant con tool_calls que no
+ * tenga TODOS sus resultados guardados — en cualquier parte del historial,
+ * no solo al final. Bug real encontrado: si el proceso se cae justo entre
+ * guardar el mensaje assistant (con tool_calls) y terminar de guardar cada
+ * resultado (runner.ts, el for de "for (const call of toolCalls)"), ese
+ * mensaje queda huérfano a la mitad del historial — y el turno siguiente
+ * agrega un mensaje nuevo DESPUÉS, así que ya no es el último mensaje. La
+ * versión vieja de esta función solo miraba la cola, así que nunca lo
+ * encontraba: esa conversación quedaba rota para siempre (OpenAI/Anthropic
+ * rechazan cualquier transcript con un tool_call sin su resultado). Ahora
+ * se escanea TODO el historial y se descarta el assistant huérfano junto
+ * con los resultados parciales que sí llegó a guardar (si no, esos
+ * resultados sueltos también romperían el formato).
+ */
+export function pruneOrphanToolCalls(messages: ChatMessage[]): ChatMessage[] {
+  const idsConResultado = new Set<string>();
+  for (const m of messages) {
+    if (m.role === 'tool' && typeof m.tool_call_id === 'string') idsConResultado.add(m.tool_call_id);
   }
-  while (out.length > 0 && out[0]!.role === 'tool') out.shift();
-  return out;
+
+  const idsADescartar = new Set<string>();
+  for (const m of messages) {
+    if (m.role !== 'assistant' || !('tool_calls' in m) || !Array.isArray(m.tool_calls)) continue;
+    const incompleto = m.tool_calls.some((c) => !idsConResultado.has(c.id));
+    if (incompleto) for (const c of m.tool_calls) idsADescartar.add(c.id);
+  }
+  if (idsADescartar.size === 0) return messages;
+
+  return messages.filter((m) => {
+    if (m.role === 'assistant' && 'tool_calls' in m && Array.isArray(m.tool_calls)) {
+      return !m.tool_calls.some((c) => idsADescartar.has(c.id));
+    }
+    if (m.role === 'tool' && typeof m.tool_call_id === 'string') {
+      return !idsADescartar.has(m.tool_call_id);
+    }
+    return true;
+  });
 }
 
 async function runTool(

@@ -41,14 +41,48 @@ const modeloSchema = z.object({
   garantiaMeses: z.number().default(12),
 });
 
-const schema = z.object({
-  name: z.string().default('Asistente'),
-  system_prompt: z.string().min(1, 'Falta system_prompt en agent.yaml'),
-  greeting: z.string().optional(),
-  knowledge: z.array(z.string()).default([]),
-  products: z.array(productSchema).default([]),
-  catalogo: z.array(modeloSchema).default([]),
-});
+// Exportado solo para tests (config.test.ts) — valida el cruce
+// catalogo/products sin pasar por el filesystem ni por el caché de loadConfig.
+export const schema = z
+  .object({
+    name: z.string().default('Asistente'),
+    system_prompt: z.string().min(1, 'Falta system_prompt en agent.yaml'),
+    greeting: z.string().optional(),
+    knowledge: z.array(z.string()).default([]),
+    products: z.array(productSchema).default([]),
+    catalogo: z.array(modeloSchema).default([]),
+  })
+  // Bug real encontrado: antes, un typo en catalogo[].key (que no matchea
+  // ningún products[].key) no fallaba acá — buscarModelo.ts hacía
+  // `products.find(p => p.key === modelo.key)`, no encontraba nada, y el
+  // bot mandaba el precio por texto SIN fotos para ese modelo, en silencio,
+  // sin ningún error en los logs. Mejor que truene al arrancar (mensaje
+  // claro) a que se descubra semanas después por una queja de un cliente.
+  .superRefine((cfg, ctx) => {
+    const productKeys = new Set(cfg.products.map((p) => p.key));
+    const vistosProducts = new Set<string>();
+    for (const [i, p] of cfg.products.entries()) {
+      if (vistosProducts.has(p.key)) {
+        ctx.addIssue({ code: 'custom', path: ['products', i, 'key'], message: `products.key duplicada: "${p.key}"` });
+      }
+      vistosProducts.add(p.key);
+    }
+
+    const vistosCatalogo = new Set<string>();
+    for (const [i, m] of cfg.catalogo.entries()) {
+      if (vistosCatalogo.has(m.key)) {
+        ctx.addIssue({ code: 'custom', path: ['catalogo', i, 'key'], message: `catalogo.key duplicada: "${m.key}"` });
+      }
+      vistosCatalogo.add(m.key);
+      if (!productKeys.has(m.key)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['catalogo', i, 'key'],
+          message: `catalogo.key "${m.key}" no tiene ningún products.key que coincida — ese modelo nunca va a mandar fotos/videos`,
+        });
+      }
+    }
+  });
 
 export type AgentConfig = z.infer<typeof schema>;
 
