@@ -204,6 +204,18 @@ const PISTA_GRANDE = /\b(grande|grandes|industrial(es)?)\b/;
 const SENAL_INFO_GENERICA =
   /\b(info|informacion|catalogo|modelos?|incubadoras?|maquinas?|productos?|precios?|cotizacion(es)?|cotizar|cuesta[n]?|cuanto|vale[n]?|costo[s]?)\b/;
 
+// Bug reportado: "cuanto" solo (sin "cuesta"/"vale"/"costo") hace falta para
+// cubrir "¿cuánto sale?", pero esa misma palabra suelta también aparece en
+// preguntas de seguimiento puntuales que NO son un pedido de catálogo — ej.
+// "¿con cuánto de adelanto me la envían?" terminaba mandando el catálogo
+// entero de nuevo en vez de la respuesta puntual. Estos temas (adelanto,
+// envío, pago, garantía, horario, ubicación...) tienen su propia respuesta
+// específica vía search_knowledge — nunca corresponde resolverlos mostrando
+// el panorama completo de productos, los mencionen en el primer mensaje o
+// en uno de seguimiento.
+const PISTA_PREGUNTA_PUNTUAL =
+  /\b(adelanto|flete|envio|envian|envia|demora|plazo|garantia|metodo(s)?|pago|direccion|ubicacion|horario|timbre|provincia|shalom)\b/;
+
 function normalizarTexto(t: string): string {
   return t
     .normalize('NFD')
@@ -219,6 +231,7 @@ export function esPedidoGenericoDeInfo(texto: string): boolean {
   if (/\d/.test(t)) return false;
   if (mencionaLinea(t)) return false;
   if (PISTA_GRANDE.test(t)) return false;
+  if (PISTA_PREGUNTA_PUNTUAL.test(t)) return false;
   return SENAL_INFO_GENERICA.test(t);
 }
 

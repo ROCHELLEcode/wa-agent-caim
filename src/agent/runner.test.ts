@@ -57,6 +57,24 @@ describe('esPedidoGenericoDeInfo', () => {
       assert.equal(esPedidoGenericoDeInfo(t), false, `NO debería matchear: "${t}"`);
     }
   });
+
+  it('bug reportado: una pregunta puntual de seguimiento (sin número, pero con "cuánto") ya NO dispara el catálogo completo', () => {
+    for (const t of [
+      'con cuánto de adelanto me la envían',
+      '¿cuánto es el adelanto?',
+      'cuánto cuesta el flete',
+      'cuánto demora el envío',
+      'cuánto es el método de pago',
+    ]) {
+      assert.equal(esPedidoGenericoDeInfo(t), false, `NO debería matchear: "${t}"`);
+    }
+  });
+
+  it('sigue matcheando los pedidos genéricos de precio sin palabras de seguimiento puntual', () => {
+    for (const t of ['cuánto cuesta', 'cuánto sale', 'cuánto vale', 'qué precios tienen']) {
+      assert.equal(esPedidoGenericoDeInfo(t), true, `debería matchear: "${t}"`);
+    }
+  });
 });
 
 describe('pruneOrphanToolCalls', () => {
