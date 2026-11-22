@@ -363,7 +363,7 @@ knowledge:
   - "Al llegar A LA TIENDA (recojo en persona, NO aplica a envíos por
      Shalom): preguntar por el Sr Caim y tocar el timbre 102."
   - "El día que el cliente hace el adelanto, ESE MISMO DÍA se envía su pedido por Shalom."
-  - "El adelanto para envío a provincia/distritos de Lima es S/50 para máquinas de 06 a 56 huevos, y S/80 para máquinas de 64 a 256 huevos (línea PIEDRA). Para la línea METAL el adelanto está por determinar."
+  - "El adelanto para envío a provincia/distritos de Lima es S/50 para máquinas de 06 a 128 huevos, y S/80 para máquinas de 192 a 256 huevos (línea PIEDRA). Para la línea METAL el adelanto está por determinar."
   - "La diferencia del precio (lo que no es el adelanto) se paga contraentrega cuando el pedido llega a destino, por Shalom. El cliente paga el flete en destino."
   - "Al embalaje y envío a la agencia de transporte de Lima se le adiciona S/10."
   - "El envío a provincia por defecto es por Shalom (con el adelanto parcial de S/50 u S/80 ya explicado). Si el cliente pide enviarlo por OTRA agencia distinta a Shalom (ej. Marvisur, Olva Courier, Cruz del Sur, etc.), también se puede, pero en ese caso debe pagar el 100% del precio de la máquina POR ADELANTADO, antes de que se envíe — no aplica el adelanto parcial."
@@ -1441,9 +1441,9 @@ products:
 
           se adiciona 10 soles para embalaje y dejarlo en agencia de transporte de LIMA.*
 
-          Con adelanto de 50 soles hacemos el envío de su pedido ( *por máquinas de 06 a 56 huevos* )
+          Con adelanto de 50 soles hacemos el envío de su pedido ( *por máquinas de 06 a 128 huevos* )
 
-          y 80 soles de adelanto para máquinas de 64 a 256 huevos ).
+          y 80 soles de adelanto para máquinas de 192 a 256 huevos ).
           Máquinas d metal x determinar
 
           El mismo día del adelanto se envía su pedido. ~_
