@@ -238,9 +238,14 @@ system_prompt: |
     primero, recién después el código del modelo si tiene uno — así el
     cliente nunca confunde el código con otro número. Mal: "12 HHD
     huevos", "26 OVNI huevos" (el código antes de "huevos"). Bien: "12
-    huevos HHD", "26 huevos OVNI". Mencioná
-    también, siempre, que tiene conexión dual: a 220 voltios (toma
+    huevos HHD", "26 huevos OVNI". Si el modelo tiene "conexionDual": true,
+    mencioná también, siempre, que tiene conexión dual: a 220 voltios (toma
     corriente normal) y a batería, para que funcione aunque se vaya la luz.
+    Si tiene "conexionDual": false (ej. 12 y 18 huevos OVNIPLUS), NO
+    menciones nada de la conexión ni de batería por iniciativa propia; solo
+    si el cliente pregunta puntualmente (por batería, corte de luz o cómo se
+    conecta) respondé que ese modelo funciona solo a corriente de 220
+    voltios, sin conexión a batería.
     NO menciones si la máquina es FULL AUTOMÁTICA o manual, ni expliques esa
     diferencia — eso NUNCA se dice de una, solo si el cliente pregunta
     puntualmente por eso. Ahí NO uses search_knowledge para esto: volvé a
@@ -331,8 +336,10 @@ knowledge:
   - "Vendemos incubadoras para huevos de gallina, pato, pavo y codorniz."
   - "Horario de atención: lunes a sábado de 9:00am a 6:45pm. Domingo cerrado."
   - "Todas las incubadoras vienen con todos sus implementos y accesorios
-     incluidos, con garantía, y conexión dual: a 220 voltios (toma corriente
-     normal) y a batería de 12V por si se va la luz."
+     incluidos y con garantía. Casi todas tienen conexión dual: a 220 voltios
+     (toma corriente normal) y a batería de 12V por si se va la luz. EXCEPCIÓN:
+     las de 12 y 18 huevos OVNIPLUS funcionan SOLO a corriente de 220 voltios,
+     sin conexión a batería (decirlo solo si el cliente pregunta)."
   - "Las que dicen FULL AUTOMÁTICA son más independientes; las que no lo
      dicen hay que echarles agua todos los días."
   - "En los modelos que no son FULL AUTOMÁTICA (06, 12, 24 huevos, 36 huevos,
@@ -375,8 +382,8 @@ catalogo:
   - { key: "incubadora_06", linea: "06", capacidad: 6, precio: 100 }
   - { key: "incubadora_12", linea: "12", capacidad: 12, precio: 210 }
   - { key: "incubadora_hhd_12", linea: "12 HHD", capacidad: 12, precio: 230, fullAutomatica: true }
-  - { key: "incubadora_ovniplus_12", linea: "12 OVNIPLUS", capacidad: 12, precio: 250, fullAutomatica: true }
-  - { key: "incubadora_ovniplus_18", linea: "18 OVNIPLUS", capacidad: 18, precio: 290, fullAutomatica: true }
+  - { key: "incubadora_ovniplus_12", linea: "12 OVNIPLUS", capacidad: 12, precio: 250, fullAutomatica: true, conexionDual: false }
+  - { key: "incubadora_ovniplus_18", linea: "18 OVNIPLUS", capacidad: 18, precio: 290, fullAutomatica: true, conexionDual: false }
   - { key: "incubadora_24", linea: "24", capacidad: 24, precio: 250 }
   - { key: "incubadora_24_microplus", linea: "24 MICROPLUS", capacidad: 24, precio: 350, fullAutomatica: true }
   - { key: "incubadora_50_microplus", linea: "50 MICROPLUS", capacidad: 50, precio: 600, fullAutomatica: true }

@@ -39,6 +39,9 @@ const modeloSchema = z.object({
    * garantía distinta (ej. la línea OVNI son 6 meses), así que es un campo
    * por modelo en vez de un dato fijo en el texto del prompt. */
   garantiaMeses: z.number().default(12),
+  /** Casi todas tienen conexión dual (220V + batería 12V). Algunas solo van
+   * a corriente 220V (ej. 12 y 18 OVNIPLUS), así que es un campo por modelo. */
+  conexionDual: z.boolean().default(true),
 });
 
 // Exportado solo para tests (config.test.ts) — valida el cruce
