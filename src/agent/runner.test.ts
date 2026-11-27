@@ -1,33 +1,37 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { esPedidoGenericoDeInfo, pruneOrphanToolCalls } from './runner.js';
+import { esPedidoGenericoDeInfo, esPedidoAmbiguoDeProducto, pruneOrphanToolCalls } from './runner.js';
 
 describe('esPedidoGenericoDeInfo', () => {
-  it('matchea pedidos genéricos típicos, con o sin tildes/mayúsculas/signos', () => {
-    for (const t of ['info', 'Info', 'INFO', 'información', 'informacion', '¿info?', 'info porfa', 'Catálogo', 'catalogo']) {
-      assert.equal(esPedidoGenericoDeInfo(t), true, `debería matchear: "${t}"`);
-    }
-  });
-
-  it('matchea frases reales de clientes (con saludo, "porfa", "quisiera", etc. — no solo la frase pelada)', () => {
+  it('matchea pedidos genéricos que SÍ dan alguna pista de ser sobre incubadoras', () => {
     for (const t of [
-      'hola buenas, quisiera información por favor',
-      'buenas tardes me pueden dar info',
       'necesito info de las incubadoras',
-      'qué modelos tienen disponibles',
-      'tienen catálogo de las máquinas',
-      'me pasarían el catálogo porfa',
-      'hola, quiero información de sus productos',
       'buenos días, quisiera saber qué incubadoras manejan',
-      'podrían darme info porfavor',
-      'buenas, tienen catalogo?',
+      'info de huevos de gallina',
     ]) {
       assert.equal(esPedidoGenericoDeInfo(t), true, `debería matchear: "${t}"`);
     }
   });
 
-  it('matchea pedidos genéricos de precio/cotización SIN mencionar modelo ni capacidad (antes caían al criterio del LLM)', () => {
+  it('bug reportado (CAIM ahora también vende picadoras de verduras): un pedido genérico SIN ninguna pista de incubadoras ya NO dispara el catálogo de incubadoras — ver esPedidoAmbiguoDeProducto', () => {
     for (const t of [
+      'info',
+      'Info',
+      'INFO',
+      'información',
+      'informacion',
+      '¿info?',
+      'info porfa',
+      'Catálogo',
+      'catalogo',
+      'hola buenas, quisiera información por favor',
+      'buenas tardes me pueden dar info',
+      'qué modelos tienen disponibles',
+      'tienen catálogo de las máquinas',
+      'me pasarían el catálogo porfa',
+      'hola, quiero información de sus productos',
+      'podrían darme info porfavor',
+      'buenas, tienen catalogo?',
       'hola, cuánto cuesta',
       'qué precios tienen',
       'cuánto sale',
@@ -36,7 +40,13 @@ describe('esPedidoGenericoDeInfo', () => {
       'quisiera cotizar por favor',
       'buenas, cuál es el costo',
     ]) {
-      assert.equal(esPedidoGenericoDeInfo(t), true, `debería matchear: "${t}"`);
+      assert.equal(esPedidoGenericoDeInfo(t), false, `ya NO debería matchear (ahora es ambiguo): "${t}"`);
+    }
+  });
+
+  it('nunca matchea si se menciona "picadora" — eso lo maneja el flujo de picadora, no el de incubadoras', () => {
+    for (const t of ['info', 'catálogo', 'precio'].map((p) => `${p} de la picadora`)) {
+      assert.equal(esPedidoGenericoDeInfo(t), false, `NO debería matchear: "${t}"`);
     }
   });
 
@@ -70,9 +80,26 @@ describe('esPedidoGenericoDeInfo', () => {
     }
   });
 
-  it('sigue matcheando los pedidos genéricos de precio sin palabras de seguimiento puntual', () => {
-    for (const t of ['cuánto cuesta', 'cuánto sale', 'cuánto vale', 'qué precios tienen']) {
-      assert.equal(esPedidoGenericoDeInfo(t), true, `debería matchear: "${t}"`);
+});
+
+describe('esPedidoAmbiguoDeProducto', () => {
+  it('pedidos genéricos de precio/catálogo sin ninguna pista de incubadoras NI picadoras son ambiguos', () => {
+    for (const t of [
+      'info',
+      'catalogo',
+      'cuánto cuesta',
+      'cuánto sale',
+      'cuánto vale',
+      'qué precios tienen',
+      'me pueden dar una cotización',
+    ]) {
+      assert.equal(esPedidoAmbiguoDeProducto(t), true, `debería ser ambiguo: "${t}"`);
+    }
+  });
+
+  it('NO es ambiguo si hay pista de incubadoras (eso es esPedidoGenericoDeInfo) ni si menciona picadora (eso es otro flujo)', () => {
+    for (const t of ['necesito info de las incubadoras', 'cuánto cuesta la picadora', 'hola', 'quiero una de 24 huevos']) {
+      assert.equal(esPedidoAmbiguoDeProducto(t), false, `NO debería ser ambiguo: "${t}"`);
     }
   });
 });

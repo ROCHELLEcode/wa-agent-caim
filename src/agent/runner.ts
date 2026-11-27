@@ -48,15 +48,29 @@ export async function runAgent(input: RunAgentInput): Promise<AgentResult> {
     alreadySent: computeAlreadySent(history),
   };
 
+  // Pedido genérico SIN ninguna pista de cuál línea de producto (desde que
+  // CAIM también vende picadoras de verduras): preguntar, no asumir
+  // incubadoras — bug reportado: un cliente buscando picadoras escribía
+  // "info"/"catálogo" y se le mandaba igual el catálogo de incubadoras.
+  if (userText && esPedidoAmbiguoDeProducto(userText)) {
+    const saludo = contact.name ? `¡Hola, ${contact.name}!` : '¡Hola!';
+    const reply = sanitizeReply(
+      `${saludo} Vendemos incubadoras de huevos y también picadoras de verduras eléctricas. ¿Cuál le interesa?`,
+    );
+    await store.appendMessage(conversation.id, { role: 'assistant', content: reply, toolCalls: null });
+    return { reply, toolsUsed: [], media: [] };
+  }
+
   // Pedido de info totalmente genérico ("info", "catálogo", "qué modelos
-  // tienen", sin ningún número ni pista de tamaño): el system_prompt ya le
-  // pide al modelo que acá llame a mostrar_seccion("pequenos") y responda
-  // con un texto fijo, pero en la práctica esa instrucción no siempre se
-  // sigue — alguna vez el modelo termina mandando un solo modelo (ej. el más
-  // chico) en vez del panorama completo. Para un pedido así de inequívoco no
-  // hace falta depender del criterio del modelo: se resuelve acá mismo,
-  // siempre igual (mismo texto y fotos que se le pide al modelo en el
-  // system_prompt, para los casos que esto no llegue a interceptar).
+  // tienen", sin ningún número ni pista de tamaño) QUE SÍ da alguna pista de
+  // ser sobre incubadoras: el system_prompt ya le pide al modelo que acá
+  // llame a mostrar_seccion("pequenos") y responda con un texto fijo, pero
+  // en la práctica esa instrucción no siempre se sigue — alguna vez el
+  // modelo termina mandando un solo modelo (ej. el más chico) en vez del
+  // panorama completo. Para un pedido así de inequívoco no hace falta
+  // depender del criterio del modelo: se resuelve acá mismo, siempre igual
+  // (mismo texto y fotos que se le pide al modelo en el system_prompt, para
+  // los casos que esto no llegue a interceptar).
   if (userText && esPedidoGenericoDeInfo(userText)) {
     const resultado = await mostrarSeccion.run({ seccion: 'pequenos' }, ctx);
     const toolCallId = 'auto-info-generica';
@@ -216,6 +230,17 @@ const SENAL_INFO_GENERICA =
 const PISTA_PREGUNTA_PUNTUAL =
   /\b(adelanto|flete|envio|envian|envia|demora|plazo|garantia|metodo(s)?|pago|direccion|ubicacion|horario|timbre|provincia|shalom)\b/;
 
+// Desde que CAIM también vende picadoras de verduras (segunda línea de
+// producto), un pedido de "info"/"catálogo" ya NO es sinónimo de
+// incubadoras — podría ser sobre picadoras. Si el mensaje menciona
+// "picadora" explícitamente, esto directamente no es un pedido genérico de
+// incubadoras (lo maneja el flujo de picadora en el system_prompt). Si es
+// genérico pero no menciona NADA de ninguna de las dos líneas, es ambiguo:
+// hay que preguntar cuál, no asumir incubadoras (bug reportado: "alguien
+// escribe buscando picadoras y le mandamos el catálogo de incubadoras").
+const PICADORA_SIGNAL = /\bpicadora(s)?\b/;
+const INCUBADORA_SIGNAL = /\b(incubadoras?|huevos?|gallinas?|patos?|pavos?|codorniz(ces)?|aves?)\b/;
+
 function normalizarTexto(t: string): string {
   return t
     .normalize('NFD')
@@ -226,13 +251,27 @@ function normalizarTexto(t: string): string {
     .replace(/\s+/g, ' ');
 }
 
-export function esPedidoGenericoDeInfo(texto: string): boolean {
-  const t = normalizarTexto(texto);
+function esPedidoGenericoBase(t: string): boolean {
   if (/\d/.test(t)) return false;
   if (mencionaLinea(t)) return false;
   if (PISTA_GRANDE.test(t)) return false;
   if (PISTA_PREGUNTA_PUNTUAL.test(t)) return false;
+  if (PICADORA_SIGNAL.test(t)) return false;
   return SENAL_INFO_GENERICA.test(t);
+}
+
+/** Pedido genérico que SÍ da alguna pista de ser sobre incubadoras — acá
+ * corresponde mostrar el catálogo de incubadoras como antes. */
+export function esPedidoGenericoDeInfo(texto: string): boolean {
+  const t = normalizarTexto(texto);
+  return esPedidoGenericoBase(t) && INCUBADORA_SIGNAL.test(t);
+}
+
+/** Pedido genérico SIN ninguna pista de cuál de las dos líneas de producto
+ * (incubadoras o picadoras) — hay que preguntar, no asumir. */
+export function esPedidoAmbiguoDeProducto(texto: string): boolean {
+  const t = normalizarTexto(texto);
+  return esPedidoGenericoBase(t) && !INCUBADORA_SIGNAL.test(t);
 }
 
 /**
